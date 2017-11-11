@@ -869,6 +869,7 @@ public class Sc61860Base implements Serializable {
                 dp = incr16(dp);
                 dreg = decr8(dreg);
             } while (dreg != 0);
+            dp = decr16(dp);
         }
     }
 
@@ -883,6 +884,7 @@ public class Sc61860Base implements Serializable {
                 dp = incr16(dp);
                 dreg = decr8(dreg);
             } while (dreg != 0);
+            dp = decr16(dp);
         }
     }
 
@@ -909,6 +911,7 @@ public class Sc61860Base implements Serializable {
                 dp = incr16(dp);
                 dreg = decr8(dreg);
             } while (dreg != 0);
+            dp = decr16(dp);
         }
     }
 
@@ -982,6 +985,7 @@ public class Sc61860Base implements Serializable {
                 dp = incr16(dp);
                 dreg = decr8(dreg);
             } while (dreg != 0);
+            dp = decr16(dp);
         }
     }
 
@@ -999,6 +1003,7 @@ public class Sc61860Base implements Serializable {
                 dp = incr16(dp);
                 dreg = decr8(dreg);
             } while (dreg!= 0);
+            dp = decr16(dp);
         }
     }
 
