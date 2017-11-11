@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="tk.horiuchi.pokecom">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Pokecom GO"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SubActivity1401"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".SubActivity1402"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".SubActivity1450"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".SubActivity1460"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".SubActivity1470"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".SubActivity1245"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".SubActivity1251"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".SubActivity1261"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".SubActivity1350"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".SubActivity1360"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".MyPreferenceActivity"
+            android:screenOrientation="landscape">
+            <!--android:theme="@style/CustomThemePreference"-->
+        </activity>
+        <activity
+            android:name=".FileLoad"
+            android:windowSoftInputMode="stateAlwaysHidden">
+        </activity>
+        <activity
+            android:name=".FileSave"
+            android:windowSoftInputMode="stateAlwaysHidden">
+        </activity>
+
+    </application>
+
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <!--uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" /-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+</manifest>

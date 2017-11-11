@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "25.0.0"
+    defaultConfig {
+        applicationId "tk.horiuchi.pokecom"
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode 9
+        versionName "1.01.05"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    applicationVariants.all { variant ->
+        /* リリースビルド時 */
+        if (variant.buildType.name.equals("release")) {
+            variant.outputs.each { output ->
+                if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
+                    def applicationId = defaultConfig.applicationId
+                    def apps = applicationId.split("\\.")
+                    def name = apps[apps.length-1]
+                    def versionName = defaultConfig.versionName
+                    def newName = "${name}-${versionName}.apk"
+                    output.outputFile = new File(output.outputFile.parent, newName)
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+    compile 'com.google.code.gson:gson:2.3.1'
+}

@@ -1,0 +1,54 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <!--style name="AppTheme" parent="Theme.AppCompat.Light"-->
+    <!--style name="AppTheme" parent="@android:style/Theme.Light"-->
+    <style name="AppTheme" parent="@android:style/Theme.Holo.Light">
+
+    <!-- Customize your theme here. -->
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:actionBarStyle">@style/ActionBar</item>
+    </style>
+
+    <style name="ActionBar" parent="@android:style/Widget.Holo.ActionBar.Solid">
+        <item name="android:background">@color/colorActionBar</item>
+        <item name="android:titleTextStyle">@style/TitleTextStyle</item>
+    </style>
+
+    <style name="TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textSize">@dimen/textsize_medium</item>
+    </style>
+
+    <style name="charButton" parent="android:Widget.Button">
+        <item name="android:textSize">6sp</item>
+        <item name="android:textColor">#00000000</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:background">@drawable/button</item>
+    </style>
+
+    <style name="MyAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowMinWidthMajor">95%</item>
+        <item name="android:windowMinWidthMinor">95%</item>
+        <item name="android:textSize">@dimen/textsize_medium</item>
+    </style>
+
+    <style name="MyFileDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <!--item name="windowNoTitle">false</item-->
+        <item name="android:windowMinWidthMajor">75%</item>
+        <item name="android:windowMinWidthMinor">75%</item>
+        <item name="android:textSize">@dimen/textsize_medium</item>
+        <!--item name="android:textColor">#00000000</item-->
+    </style>
+
+    <style name="CustomThemePreference" parent="@android:style/Theme.Holo.Light">
+        <item name="android:preferenceCategoryStyle">@style/PreferenceCategory</item>
+    </style>
+    <style name="PreferenceCategory">
+        <item name="android:layout">@layout/costom_preference</item>
+    </style>
+
+</resources>

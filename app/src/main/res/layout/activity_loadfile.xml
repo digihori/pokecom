@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text1"
+                android:text="LOAD File"
+                android:textSize="@dimen/textsize_large"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/text2"
+                android:text="select file"
+                android:textSize="@dimen/textsize_medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/dirPath"
+                    android:text=""
+                    android:textSize="@dimen/textsize_medium"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:inputType="text"
+                    android:background="@drawable/text_border"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/btn1"
+                    android:text="..."
+                    android:textSize="@dimen/textsize_medium"
+                    android:layout_weight="7"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClickFileSelect"/>
+            </LinearLayout>
+
+            <RadioGroup
+                android:id="@+id/rg_filetype"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rb_basic"
+                    android:text="BASIC"
+                    android:textSize="@dimen/textsize_small"
+                    android:checked="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <RadioButton
+                    android:id="@+id/rb_binary"
+                    android:text="BINARY"
+                    android:textSize="@dimen/textsize_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/text3"
+                android:text="start address(binary file only)"
+                android:textSize="@dimen/textsize_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/startAdr"
+                android:text="0x2000"
+                android:textSize="@dimen/textsize_medium"
+                android:inputType="text"
+                android:background="@drawable/text_border"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn2"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="1"
+                    android:text="OK"
+                    android:textSize="@dimen/textsize_medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="btnOk"
+                    />
+
+                <Button
+                    android:id="@+id/btn3"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="1"
+                    android:text="CANCEL"
+                    android:textSize="@dimen/textsize_medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="btnCancel"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/text4"
+                android:text="@string/load_hint"
+                android:textSize="@dimen/textsize_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

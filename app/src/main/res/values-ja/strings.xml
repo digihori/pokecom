@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">Pokecom</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- Opening Activity -->
+    <string name="start_menu_text1">Select ROM and press OK button.</string>
+    <string name="start_menu_text2">The next time, It will be loaded automatically.</string>
+
+    <!-- select ROM strings -->
+    <string name="select_rom_1245">PC-1245</string>
+    <string name="select_rom_1251">PC-1251</string>
+    <string name="select_rom_1261">PC-1261</string>
+    <string name="select_rom_1350">PC-1350</string>
+    <string name="select_rom_1360">PC-1360</string>
+    <string name="select_rom_1401">PC-1401</string>
+    <string name="select_rom_1402">PC-1402</string>
+    <string name="select_rom_1450">PC-1450</string>
+    <string name="select_rom_1460">PC-1460</string>
+    <string name="select_rom_1470">PC-1470U</string>
+
+    <!-- select MODE strings -->
+    <string name="select_mode_01">PRO</string>
+    <string name="select_mode_02">RUN</string>
+
+    <!-- menu used -->
+    <string name="opt_menu_01">load...</string>
+    <string name="opt_menu_02">save...</string>
+    <string name="opt_menu_03">reset</string>
+    <string name="opt_menu_04">settings...</string>
+    <string name="opt_menu_05">help</string>
+    <string name="opt_menu_06">exit</string>
+
+    <!-- file select used -->
+    <string name="file_select_to_parent">上へ</string>
+    <string name="file_select_back">戻る</string>
+    <string name="file_select_cancel">キャンセル</string>
+
+    <!-- preference strings -->
+    <string name="preference_title">設定</string>
+
+    <string name="clock_emulate_checkbox_title">cpu clockエミュレート</string>
+    <string name="clock_emulate_checkbox_summary">cpu clockのエミュレート処理を有効にします</string>
+
+    <string name="vibrator_checkbox_title">バイブレータ機能</string>
+    <string name="vibrator_checkbox_summary">キー押下時のバイブレータ機能を有効にします</string>
+    <string name="beep_checkbox_title">BEEP機能</string>
+    <string name="beep_checkbox_summary">BEEP機能のエミュレート処理を有効にします(開発中)</string>
+    <string name="debug_checkbox_title">デバッグ情報表示</string>
+    <string name="debug_checkbox_summary">画面上にデバッグ情報を表示する機能を有効にします</string>
+
+
+    <string name="about_title">Pokecom GO について</string>
+    <string name="about_body">
+        SHARPのポケコン(sc61860系)のエミュレーターです。\n
+        対応機種：pc-1245/1251/1261/1350/1401/1402/1450/1460/1470U\n
+        ROMイメージは同梱されていませんので別途準備が必要です。\n\n
+        初めてエミュレータを起動すると、/sdcard/pokecom/romディレクトリ(端末によってパスが微妙に異なります)が作成され、
+        そこにダミーのROMイメージファイル(pc1245mem.bin)を作成します。\n
+        このフォルダーに各種ROMイメージを配置するようにしてください。\n\n
+        ROMイメージファイルは、\n
+        例えばPC-1245の場合は、
+        内部ROM：0x0000-0x1fffの8K分と外部ROM：0x4000-0x7fffの16K分を0x0000-0xffffの64K空間に配置し、
+        それ以外のアドレスはダミーデータで埋めたバイナリーイメージとして作成し、
+        pc1245mem.binというファイル名で作成してください。\n
+        PC-1251/1261/1350/1401/1402も同様です。\n\n
+        PC-1460及び1470Uは外部ROMがバンク形式になっていますので、２ファイル構成にします。\n
+        内部ROMは、pc1460mem.binとして作成してください。中身は0x0000-0x1fffの部分のみ必要です。\n
+        外部ROMのバンク部分は、pc1460bank.binとして作成し、バンクデータをそのまま順番に並べて配置してください。\n\n
+        ファイルが正しく認識されると、初期画面のリストで対象の機種が黒字に変わります。
+    </string>
+
+    <string name="load_hint">
+        【説明】\n
+        拡張子の.bas/.binは自動認識されます。\n
+        またバイナリーファイルは、ファイル名の後ろにアドレスをつける
+        （例：hogehoge-4000.bin）と、
+        start addressフィールドが自動入力されます。
+    </string>
+
+</resources>

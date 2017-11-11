@@ -1,0 +1,80 @@
+<resources>
+    <string name="app_name">Pokecom</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- Opening Activity -->
+    <string name="start_menu_text1">Select ROM and press OK button.</string>
+    <string name="start_menu_text2">The next time, It will be loaded automatically.</string>
+
+    <!-- select ROM strings -->
+    <string name="select_rom_1245">PC-1245</string>
+    <string name="select_rom_1251">PC-1251</string>
+    <string name="select_rom_1261">PC-1261</string>
+    <string name="select_rom_1350">PC-1350</string>
+    <string name="select_rom_1360">PC-1360</string>
+    <string name="select_rom_1401">PC-1401</string>
+    <string name="select_rom_1402">PC-1402</string>
+    <string name="select_rom_1450">PC-1450</string>
+    <string name="select_rom_1460">PC-1460</string>
+    <string name="select_rom_1470">PC-1470U</string>
+
+    <!-- select MODE strings -->
+    <string name="select_mode_01">PRO</string>
+    <string name="select_mode_02">RUN</string>
+
+    <!-- menu used -->
+    <string name="opt_menu_01">load...</string>
+    <string name="opt_menu_02">save...</string>
+    <string name="opt_menu_03">reset</string>
+    <string name="opt_menu_04">settings...</string>
+    <string name="opt_menu_05">help</string>
+    <string name="opt_menu_06">exit</string>
+
+    <!-- file select used -->
+    <string name="file_select_to_parent">to parent</string>
+    <string name="file_select_back">back</string>
+    <string name="file_select_cancel">cancel</string>
+
+    <!-- preference strings -->
+    <string name="preference_title">settings</string>
+
+    <string name="clock_emulate_checkbox_title">cpu clock</string>
+    <string name="clock_emulate_checkbox_summary">Enable emulation of cpu clock.</string>
+
+    <string name="vibrator_checkbox_title">viblation</string>
+    <string name="vibrator_checkbox_summary">Activate vibrator function when key is pressed.</string>
+    <string name="beep_checkbox_title">beep</string>
+    <string name="beep_checkbox_summary">Enable emulation of beep function(in development).</string>
+    <string name="debug_checkbox_title">debug</string>
+    <string name="debug_checkbox_summary">Enable the function to display debugging information.</string>
+
+    <string name="about_title">About Pokecom GO</string>
+    <string name="about_body">
+        It is an emulator of SHARP\'s Pocket Computer(sc61860 series).\n
+        Supported models:pc-1245/1251/1261/1350/1401/1402/1450/1460/1470U\n
+        ROM image is not included, so it is necessary to prepare own.\n\n
+        When you start the emulator for the first time,
+        /sdcard/pokecom/rom directory (the path may be different depending on the device) is created,
+        and is created a dummy ROM image file(pc1245mem.bin) there.\n
+        Please arrange various ROM images in this folder.\n\n
+        ROM image file,\n
+        for example, in the case of PC-1245,
+        8K of internal ROM:0x0000-0x1fff and 16K of external ROM:0x4000-0x7fff are arranged in 64K space of 0x0000-0xffff,
+        Other addresses are created as a binary image filled with dummy data,
+        Please create with file name pc1245mem.bin.\n
+        The same applies to PC-1251/1261/1350/1401/1402.\n\n
+        PC-1460 and 1470U have external ROM in bank format, make 2 file configuration.\n
+        Please create internal ROM as pc1460mem.bin. Only the part of 0x0000 - 0x1fff is necessary.\n
+        Create external ROM as pc1460bank.bin and arrange the bank data in order as it is.\n\n
+        If the file is recognized correctly, the target model will be valid in the list on the initial screen.
+    </string>
+
+    <string name="load_hint">
+        [hint]\n
+        The extention .bas / .bin is recognized automatically.\n
+        For binary files, add an address after the file name
+        (Example: hogehoge-4000.bin),
+        the start address field is automatically filled.
+    </string>
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <tk.horiuchi.pokecom.ParamReadableListPreference
+        android:key="clock_emulate_checkbox_key"
+        android:defaultValue="false" />
+
+    <CheckBoxPreference
+        android:key="vibrator_checkbox_key"
+        android:defaultValue="true" />
+
+    <CheckBoxPreference
+        android:key="beep_checkbox_key"
+        android:defaultValue="false" />
+
+    <CheckBoxPreference
+        android:key="debug_checkbox_key"
+        android:defaultValue="false" />
+
+</PreferenceScreen>

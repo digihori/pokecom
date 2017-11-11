@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    　　<!--string-array name="rom_list_entries">
+    　　　　<item>PC-1401</item>
+    　　　　<item>PC-1245</item>
+    　　　　<item>PC-1350</item>
+    　　</string-array-->
+    　　<!--string-array name="rom_list_entryvalues">
+    　　　　<item>1</item>
+    　　　　<item>2</item>
+    　　　　<item>3</item>
+    　　</string-array-->
+
+    　　<!--string-array name="speed_list_entries">
+    　　　　<item>高</item>
+    　　　　<item>中</item>
+    　　　　<item>低</item>
+    　　</string-array>
+    　　<string-array name="speed_list_entryvalues">
+    　　　　<item>1</item>
+    　　　　<item>2</item>
+    　　　　<item>3</item>
+    　　</string-array-->
+
+</resources>

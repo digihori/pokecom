@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/preference_title"
+        android:layout="@layout/costom_preference">
+
+        <CheckBoxPreference
+            android:key="clock_emulate_checkbox_key"
+            android:defaultValue="true"
+            android:title="@string/clock_emulate_checkbox_title"
+            android:summary="@string/clock_emulate_checkbox_summary" />
+
+        <CheckBoxPreference
+            android:key="vibrator_checkbox_key"
+            android:defaultValue="true"
+            android:title="@string/vibrator_checkbox_title"
+            android:summary="@string/vibrator_checkbox_summary" />
+
+        <CheckBoxPreference
+            android:key="beep_checkbox_key"
+            android:defaultValue="false"
+            android:title="@string/beep_checkbox_title"
+            android:summary="@string/beep_checkbox_summary" />
+
+        <CheckBoxPreference
+            android:key="debug_checkbox_key"
+            android:defaultValue="false"
+            android:title="@string/debug_checkbox_title"
+            android:summary="@string/debug_checkbox_summary" />
+
+    </PreferenceCategory>
+</PreferenceScreen>
