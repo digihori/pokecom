@@ -684,6 +684,9 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
             //Log.w("LOG", String.format("%s", str));
 
             talken = split(str);
+            //for (int i = 0; i < talken.length; i++) {
+            //    Log.w("LOAD", String.format("%s", talken[i]));
+            //}
 
             // 一つ目のトークンは必ず行番号
             int line_num = Integer.parseInt(talken[0]);
@@ -696,6 +699,10 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
 
             // 次のトークンからはコマンド
             for (int i = 1; i < talken.length; i++) {
+                //Log.w("LOAD", String.format("talken[%d]=%s length=%d", i, talken[i], talken[i].length()));
+                //for (int j = 0; j < talken[i].length(); j++) {
+                //    Log.w("LOAD", String.format("%02x", (int)(talken[i].charAt(j))));
+                //}
                 if (i == 1 && talken[i].equals(":")) continue;  // 行番号の次がコロンの場合は読み捨て
                 int temp = cmdname2code(talken[i]);
                 if (temp != 0) {
