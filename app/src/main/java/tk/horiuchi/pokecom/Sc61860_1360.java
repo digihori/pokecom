@@ -342,11 +342,13 @@ public class Sc61860_1360 extends  Sc61860Base {
 
     @Override
     protected void outf() {
-        //if ((foval & 8) != 0) {
-        //    bankc = 1;
-        //} else {
-        //    bankc = 0;
-        //}
+        if ((foval & 8) != 0) {
+            bankc = 1;
+            Log.w("outf", String.format("rambank=%d", bankc));
+        } else {
+            bankc = 0;
+            Log.w("outf", String.format("rambank=%d", bankc));
+        }
     }
 
 }

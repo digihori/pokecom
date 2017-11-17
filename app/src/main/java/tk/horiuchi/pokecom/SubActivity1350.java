@@ -94,7 +94,7 @@ public class SubActivity1350 extends SubActivityBase {
                 "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
                 "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_",
                 "'", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
-                "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "\0", "\0",
+                "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~", "\0",
                 "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0",
                 "\0", "LN", "LOG", "EXP", "SQR", "SIN", "COS", "TAN", "INT", "ABS", "SGN", "DEG", "DMS", "ASN", "ACS", "ATN",
                 "RND", "AND", "OR", "NOT", "ASC", "VAL", "LEN", "PEEK", "CHR$", "STR$", "MID$", "LEFT$", "RIGHT$", "INKEY$", "PI", "MEM",
@@ -102,7 +102,7 @@ public class SubActivity1350 extends SubActivityBase {
                 "RANDOM", "DEGREE", "RADIAN", "GRAD", "BEEP", "WAIT", "GOTO", "TRON", "TROFF", "CLEAR", "USING", "DIM", "CALL", "POKE", "CLS", "CURSOR",
                 "TO", "STEP", "THEN", "ON", "IF", "FOR", "LET", "REM", "END", "NEXT", "STOP", "READ", "DATA", "PAUSE", "PRINT", "INPUT",
                 "GOSUB", "AREAD", "LPRINT", "RETURN", "RESTORE", "CHAIN", "GCURSOR", "GPRINT", "LINE", "POINT", "PSET", "PRESET", "BASIC", "TEXT", "OPEN$", "\0",
-                "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0"
+                "\0", "\\YEAR", "\\MONTH", "\\DAY", "\\YEN", "\0︎", "\0︎", "\0︎", "\0︎", "\\BX", "\\INS", "\\PI", "\\SQR", "\0", "\0", "\0"
         };
 
     }

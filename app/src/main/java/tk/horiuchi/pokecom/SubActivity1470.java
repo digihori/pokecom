@@ -192,10 +192,18 @@ public class SubActivity1470 extends SubActivityBase {
                             continue;
                         }
                     } else {
-                        for (int j = 0; j < n; j++) {
-                            dest[w++] = (int) (talken[i].charAt(j));
-                            //Log.w("LOG", String.format("%s", talken[i].charAt(j)));
+                        if (talken[i].equals("\\SQR")) {
+                            dest[w++] = 0xfc;
                             ll++;
+                        } else if (talken[i].equals("\\PI")) {
+                            dest[w++] = 0xfb;
+                            ll++;
+                        } else {
+                            for (int j = 0; j < n; j++) {
+                                dest[w++] = (int) (talken[i].charAt(j));
+                                //Log.w("LOG", String.format("%s", talken[i].charAt(j)));
+                                ll++;
+                            }
                         }
                     }
                 }
@@ -296,8 +304,25 @@ public class SubActivity1470 extends SubActivityBase {
                         dest[w++] = ' ';
                         cmd_exist = false;
                     }
-                    dest[w++] = c;
-
+                    if (c == 0xfc) {
+                        if (non_cmd) {
+                            dest[w++] = ' ';
+                        }
+                        tmp = "\\SQR";
+                        for (int j = 0; j < tmp.length(); j++) {
+                            dest[w++] = tmp.charAt(j);
+                        }
+                    } else if (c == 0xfb) {
+                        if (non_cmd) {
+                            dest[w++] = ' ';
+                        }
+                        tmp = "\\PI";
+                        for (int j = 0; j < tmp.length(); j++) {
+                            dest[w++] = tmp.charAt(j);
+                        }
+                    } else {
+                        dest[w++] = c;
+                    }
                     non_cmd = (c != ' ') ? true : false;
                 }
                 if (r >= source.length) break;

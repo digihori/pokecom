@@ -130,7 +130,7 @@ public class SubActivity1261 extends SubActivityBase {
                 "RANDOM", "DEGREE", "RADIAN", "GRAD", "BEEP", "WAIT", "GOTO", "TRON", "TROFF", "CLEAR", "USING", "DIM", "CALL", "POKE", "CLS", "CURSOR",
                 "TO", "STEP", "THEN", "ON", "IF", "FOR", "LET", "REM", "END", "NEXT", "STOP", "READ", "DATA", "PAUSE", "PRINT", "INPUT",
                 "GOSUB", "AREAD", "LPRINT", "RETURN", "RESTORE", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0",
-                "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\\PI", "\\SQR", "\\INS", "\\SQU", "\0"
+                "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\\PI", "\\SQR", "\\INS", "\\BX", "\0"
         };
 
     }

@@ -7,8 +7,8 @@ android {
         applicationId "tk.horiuchi.pokecom"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 10
-        versionName "1.01.06"
+        versionCode 11
+        versionName "1.01.07"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

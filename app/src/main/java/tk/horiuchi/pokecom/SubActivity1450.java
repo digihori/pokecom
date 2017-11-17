@@ -95,7 +95,7 @@ public class SubActivity1450 extends SubActivityBase {
                 "RANDOM", "DEGREE", "RADIAN", "GRAD", "BEEP", "WAIT", "GOTO", "TRON", "TROFF", "CLEAR", "USING", "DIM", "CALL", "POKE", "\0", "\0",
                 "TO", "STEP", "THEN", "ON", "IF", "FOR", "LET", "REM", "END", "NEXT", "STOP", "READ", "DATA", "PAUSE", "PRINT", "INPUT",
                 "GOSUB", "AREAD", "LPRINT", "RETURN", "RESTORE", "CHAIN", "\0", "\0", "\0", "\0", "\0", "\0", "BASIC", "TEXT", "OPEN$", "\0",
-                "\0", "年", "月", "日", "円", "♠︎", "❤︎", "♦︎", "♣︎", "▪️", "\0", "\0", "\0", "\0", "\0", "\0"
+                "\0", "\\YEAR", "\\MONTH", "\\DAY", "\\YEN", "\0︎", "\0︎", "\0︎", "\0︎", "\\BX", "\\INS", "\\PI", "\\SQR", "\0", "\0", "\0"
         };
 
     }
