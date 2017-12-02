@@ -600,10 +600,30 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
         }
     }
 
+    protected String replaceSpecialChar(String str) {
+        for (int i = 0xf0; i < 0xff; i++) {
+            String s = cmd_tbl[i];
+            if (s.charAt(0) != '\\') continue;
+
+            String regex = "\\"+s;
+            //Log.w("split", String.format("code=%02x cmd='%s'", i, regex));
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(str);
+            if (m.find()) {
+                str = str.replaceAll(regex, String.valueOf((char)i));
+            }
+        }
+        return str;
+    }
+
     protected String[] split(String str) {
         String str2 = str;
         String RM = null;
-        // まずREMとダブルコートの文字列を制御キャラに変換しておく
+
+        // 最初に特殊キャラを変換しておく
+        str2 = str = replaceSpecialChar(str);
+
+        // REMとダブルコートの文字列を制御キャラに変換しておく
         //String regex = "[^(a-zA-Z)]REM.*$";
         String regex = "REM.*$";
         Pattern p = Pattern.compile(regex);
@@ -617,6 +637,7 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
                 str2 = str.replaceFirst(regex, "REM");
             }
         }
+        //Log.w("split-REM", str2);
 
         String[] DQ = new String[10];   // 10個まで（仮）
         int n = 0;
@@ -632,6 +653,7 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
                 break;
             }
         }
+        //Log.w("split-DQ", str2);
 
         //Log.w("LOG", String.format("before -> '%s'", str));
         //Log.w("LOG", String.format("after  -> '%s'", str2));
@@ -652,6 +674,7 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
                 tmp[i] = DQ[j];
                 j++;
             }
+            //Log.w("split", tmp[i]);
         }
 
         return tmp;

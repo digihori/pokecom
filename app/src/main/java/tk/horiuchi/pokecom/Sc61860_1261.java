@@ -145,7 +145,13 @@ public class Sc61860_1261 extends Sc61860Base {
 
         //adr &= 0x7fff;
         if (0x2000 <= adr && adr < 0x6800) {
+            if (0x2000 <= adr && adr < 0x4000) adr &= 0x28ff;
+
             mainram[adr] = lobyte(dat);
+
+            if (0x2000 <= adr && adr < 0x3000) {
+                mainram[adr + 0x1000] = lobyte(dat);
+            }
 
             if (0x2000 <= adr && adr <= 0x203b) {
                 digi[adr - 0x2000] = (byte) mainram[adr];

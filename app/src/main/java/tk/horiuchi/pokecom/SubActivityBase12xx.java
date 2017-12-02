@@ -1,7 +1,56 @@
 package tk.horiuchi.pokecom;
 
 
+import android.util.Log;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SubActivityBase12xx extends SubActivityBase {
+
+    /*
+    @Override
+    protected String replaceSpecialChar(String str) {
+        Log.w("split-in", str);
+        int[] ii = {0x19, 0x1a, 0x4b, 0x4c};
+        for (int i = 0; i < ii.length; i++) {
+            String s = cmd_tbl[ii[i]];
+            if (s.charAt(0) != '\\') continue;
+
+            String regex = "\\"+s;
+            Log.w("split", String.format("code=%02x cmd='%s'", ii[i], regex));
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(str);
+            if (m.find()) {
+                str = str.replaceAll(regex, String.valueOf((char)(0xf0+i)));
+                // 特殊文字は仮の文字コードに変換しておく
+                // 0x19 -> 0xf0
+                // 0x1a -> 0xf1
+                // 0x4b -> 0xf2
+                // 0x4c -> 0xf3
+            }
+        }
+        Log.w("split-out", str);
+        return str;
+    }
+
+    // コマンド文字列を内部コードに変換する
+    @Override
+    protected int cmdname2code(String cmdname) {
+        int x = cmdname.charAt(0);
+        switch (x) {
+            case 0xf0: return 0x19;
+            case 0xf1: return 0x1a;
+            case 0xf2: return 0x4b;
+            case 0xf3: return 0x4c;
+            default:
+                break;
+        }
+
+        // 特殊コード以外はスーパークラスへ渡す
+        return super.cmdname2code(cmdname);
+    }
+    */
 
     @Override
     protected int[] bas2code(int[] source) {
@@ -72,6 +121,7 @@ public class SubActivityBase12xx extends SubActivityBase {
                         dest[w++] = cmdname2code(tempStr);
                         //ll++;
                         // もうちょっといいやり方ないのかな。。
+                        //Log.w("LOG", String.format("%02x='%c'", dest[w-1], dest[w-1]));
                     }
                 }
             }
