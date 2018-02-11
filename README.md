@@ -1,8 +1,8 @@
 # ポケコンエミュのプロジェクト
 # PokecomGO - Emulator of SHARP's Pocket computer(sc61860 series)
 
-It is an emulator of SHARP's Pocket Computer(sc61860 series).
-Supported models:pc-1245/1251/1261/1350/1401/1402/1450/1460/1470U
+It is an emulator of SHARP's Pocket Computer(sc61860 series).  
+Supported models:pc-1245/1251/1261/1350/1401/1402/1450/1460/1470U.  
 ROM image is not included, so it is necessary to prepare own.
 
 When you start the emulator for the first time,
@@ -24,14 +24,14 @@ Create external ROM as pc1460bank.bin and arrange the bank data in order as it i
 If the file is recognized correctly, the target model will be valid in the list on the initial screen.
 
 ## Memory map information
-###[pc-1245/1251]
+[pc-1245/1251]  
 0x0000-0x1fff : internal ROM  
 0x4000-0x7fff : external ROM  
  
-###[pc-1261/1350/1401/1402/1450]
+[pc-1261/1350/1401/1402/1450]  
 0x0000-0x1fff : internal ROM  
 0x8000-0xffff : external ROM  
  
-###[pc-1460/1470U]
+[pc-1460/1470U]  
 0x0000-0x1fff : internal ROM  
 0x4000-0x7fff : external ROM(BANK   1460:0-3, 1470U:0-7)  
