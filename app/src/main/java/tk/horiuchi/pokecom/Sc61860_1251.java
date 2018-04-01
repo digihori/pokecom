@@ -121,6 +121,7 @@ public class Sc61860_1251 extends Sc61860Base {
             Log.w("LOG", "Invalid mainram address to read:" + hex4(adr));
         }
 
+        if (0x2000 <= adr && adr < 0x4000) adr += 0x2000;
         /*
         if (0xb000 <= adr && adr < 0xb800 ) adr += 0x800;
         if (0x8000 <= adr && adr < 0xa000 ) adr += 0x2000;
@@ -151,7 +152,11 @@ public class Sc61860_1251 extends Sc61860Base {
         if (0xd000 <= adr && adr < 0xd800 ) adr -= 0x1000;
         if (0xf900 <= adr) adr &= 0xf8ff;
 
-        if (0xa000 <=adr && adr < 0xc000) {
+        if (0xb800 <=adr && adr < 0xc000) {
+            mainram[adr] = lobyte(dat);
+            mainram[adr - 0x800] = lobyte(dat);
+            mainram[adr - 0x2000] = lobyte(dat);
+        } else if (0xa000 <=adr && adr < 0xc000) {
             mainram[adr] = lobyte(dat);
             mainram[adr - 0x2000] = lobyte(dat);
         } else if (0xc000 <= adr && adr < 0xc800) {

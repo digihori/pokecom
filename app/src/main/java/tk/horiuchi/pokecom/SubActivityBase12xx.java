@@ -207,7 +207,7 @@ public class SubActivityBase12xx extends SubActivityBase {
                         dest[w++] = ' ';
                         cmd_exist = false;
                     }
-                    if (0x12 <= c && c <= 0x1f || 0x30 <= c && c<= 0x39 ||
+                    if (0x11 <= c && c <= 0x1f || 0x30 <= c && c<= 0x39 ||
                             0x40 <= c && c <= 0x4a || 0x50 <= c && c <= 0x6a) {
                         dest[w++] = cmd_tbl[c].charAt(0);
                     }
