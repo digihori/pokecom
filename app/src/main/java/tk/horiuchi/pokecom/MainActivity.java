@@ -113,21 +113,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
             deviceType = type7inch;
             if (1.3f < dpdx_org && dpdx_org< 1.4f) {
                 // nexus7(2012) tvdpi の時はスケール２倍
-                dpdx = 2f;
+                dpdx = 2.0f;
+            } else if (dpdx_org == 1.0f) {
+                dpdx = 1.5f;    // mdpi の時はスケール1.5倍
             } else {
                 // それ以外（多分xhdpiしかない？）の時はスケール３倍
-                dpdx = 3f;
+                dpdx = 3.0f;
             }
             Log.w("Main", String.format("deviceType=7inch tablet(%d) scale=%f\n", deviceType, dpdx));
         } else if (getResources().getBoolean(R.bool.is_10inch)) {
             deviceType = type10inch;
-            dpdx = 4f;
+            //dpdx = 4f;
+            dpdx = dpdx_org * 2;    // スケールは2倍
             Log.w("Main", String.format("deviceType=10inch tablet(%d) scale=%f\n", deviceType, dpdx));
         } else {
             deviceType = typePhone;
             if (dpdx_org == 1.5) {
                 // hdpiの時は少し小さめにする
                 dpdx = 1.3f;
+            } else if (dpdx_org == 3.5f) {
+                // xxxhdpiの時は少し大きめにする
+                dpdx = 4.0f;
             }
             Log.w("Main", String.format("deviceType=phone(%d) scale=%f\n", deviceType, dpdx));
         }

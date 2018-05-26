@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="150dp"
         android:orientation="horizontal">
 
         <FrameLayout
@@ -20,20 +20,20 @@
                 android:id="@+id/display"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/pc1402display"
+                android:src="@drawable/pc1470display"
                 android:scaleType="fitXY"></ImageView>
 
             <SurfaceView
                 android:id="@+id/surfaceView"
-                android:layout_width="348dp"
-                android:layout_height="60dp"
+                android:layout_width="510dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center">
             </SurfaceView>
 
         </FrameLayout>
 
         <FrameLayout
-            android:layout_weight="7"
+            android:layout_weight="11"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -41,14 +41,14 @@
                 android:id="@+id/funckey"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/pc1401funckey"
+                android:src="@drawable/pc1470funckey"
                 android:scaleType="fitStart"></ImageView>
 
             <include
                 android:id="@+id/funcKeyArea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                layout="@layout/include_keys_1401_func"
+                layout="@layout/include_keys_1470_func"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"></include>
 
@@ -67,7 +67,7 @@
             android:id="@+id/keyAreaImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/pc1402mainkey"
+            android:src="@drawable/pc1470mainkey"
             android:scaleType="fitStart"></ImageView>
 
 
@@ -75,14 +75,14 @@
             android:id="@+id/keyArea"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            layout="@layout/include_keys_1401"
+            layout="@layout/include_keys_1470"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"></include>
 
         <TextView
             android:id="@+id/debugWindow"
             android:text=""
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:typeface="monospace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
