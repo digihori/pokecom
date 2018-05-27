@@ -605,8 +605,8 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
             String s = cmd_tbl[i];
             if (s.charAt(0) != '\\') continue;
 
-            String regex = "\\"+s;
-            //Log.w("split", String.format("code=%02x cmd='%s'", i, regex));
+            String regex = String.valueOf('\\')+s;
+            Log.w("split", String.format("code=%02x cmd='%s' regex='%s'", i, s, regex));
             Pattern p = Pattern.compile(regex);
             Matcher m = p.matcher(str);
             if (m.find()) {
@@ -804,7 +804,7 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
                 //Log.w("LOG", String.format("c=%02x", c));
                 cmd = "";
                 if (0x80 <= c && c <= 0xff) {
-                    if (cmd_exist || non_cmd) {
+                    if (c < 0xf0 && (cmd_exist || non_cmd)) {
                         dest[w++] = ' ';
                     }
                     cmd_exist = false;
@@ -815,7 +815,9 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
                     for (int j = 0; j < cmd.length(); j++) {
                         dest[w++] = cmd.charAt(j);
                     }
-                    cmd_exist = true;
+                    if (c < 0xf0) {
+                        cmd_exist = true;
+                    }
                 } else {
                     if (cmd_exist) {
                         dest[w++] = ' ';

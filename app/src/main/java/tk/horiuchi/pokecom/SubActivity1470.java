@@ -95,7 +95,7 @@ public class SubActivity1470 extends SubActivityBase {
                 "ERN", "ERL", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0",
                 "ASC", "VAL", "LEN", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0",
                 "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "OPEN$", "INKEY$", "MID$", "LEFT$", "RIGHT$", "\0", "\0", "\0",
-                "CHR$", "STR$", "HEX$", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0"
+                "CHR$", "STR$", "HEX$", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\\PI", "\\SQR", "\0", "\0", "\0"
         };
 
     }
@@ -305,17 +305,17 @@ public class SubActivity1470 extends SubActivityBase {
                         cmd_exist = false;
                     }
                     if (c == 0xfc) {
-                        if (non_cmd) {
-                            dest[w++] = ' ';
-                        }
+                        //if (non_cmd) {
+                        //    dest[w++] = ' ';
+                        //}
                         tmp = "\\SQR";
                         for (int j = 0; j < tmp.length(); j++) {
                             dest[w++] = tmp.charAt(j);
                         }
                     } else if (c == 0xfb) {
-                        if (non_cmd) {
-                            dest[w++] = ' ';
-                        }
+                        //if (non_cmd) {
+                        //    dest[w++] = ' ';
+                        //}
                         tmp = "\\PI";
                         for (int j = 0; j < tmp.length(); j++) {
                             dest[w++] = tmp.charAt(j);
