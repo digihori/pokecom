@@ -6,12 +6,10 @@ import android.util.Log;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import static tk.horiuchi.pokecom.KeyboardBase.keyBufCnt;
-import static tk.horiuchi.pokecom.KeyboardBase.keym;
+import static tk.horiuchi.pokecom.KeyboardBase.mBtnStatus;
 import static tk.horiuchi.pokecom.MainActivity.rom_path;
 import static tk.horiuchi.pokecom.MainLoop1470.digi;
 import static tk.horiuchi.pokecom.MainLoop1470.state;
-import static tk.horiuchi.pokecom.SubActivityBase.kb;
 import static tk.horiuchi.pokecom.SubActivityBase.nosave;
 
 /**
@@ -244,6 +242,7 @@ public class Sc61860_1470 extends Sc61860Base {
 
         iramw(AREG, 0);
 
+        /*
         if (iacnt == 0) {
             int c = kb.getBuf();
             if (c != 0) {
@@ -251,11 +250,13 @@ public class Sc61860_1470 extends Sc61860Base {
                 kb.keyscan(c);
             }
         }
+        */
 
         if ((iaval == 0) && (memr(0x3e00) != 0)) {
             jj = memr(0x3e00) - 1;  // ビット表現になっていない！！！
-            if (jj < 7 && keym[jj] != 0) {
-                iramw(AREG, keym[jj]);
+            if (jj < 7 && mBtnStatus[jj] != 0) {
+                iramw(AREG, mBtnStatus[jj]);
+                /*
                 keyBufCnt = 3000;
                 iacnt = incr16(iacnt);
                 if (iacnt > 2) {
@@ -263,11 +264,13 @@ public class Sc61860_1470 extends Sc61860Base {
                     kb.keyclear();
                     keyBufCnt = 0;
                 }
+                */
             }
         } else if (iaval != 0) {
             jj = bit(iaval);
-            if (jj < 6 && keym[jj + 7] != 0) {
-                iramw(AREG, keym[jj + 7]);
+            if (jj < 6 && mBtnStatus[jj + 7] != 0) {
+                iramw(AREG, mBtnStatus[jj + 7]);
+                /*
                 keyBufCnt = 3000;
                 iacnt = incr16(iacnt);
                 if (iacnt > 2) {
@@ -275,6 +278,7 @@ public class Sc61860_1470 extends Sc61860Base {
                     kb.keyclear();
                     keyBufCnt = 0;
                 }
+                */
             }
         }
         if (iramr(AREG) == 0) {

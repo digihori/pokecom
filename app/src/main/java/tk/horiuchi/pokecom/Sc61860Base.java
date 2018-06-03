@@ -1,23 +1,16 @@
 package tk.horiuchi.pokecom;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 import static tk.horiuchi.pokecom.Beep.beep_on;
-import static tk.horiuchi.pokecom.KeyboardBase.keyBufCnt;
-import static tk.horiuchi.pokecom.KeyboardBase.keym;
 import static tk.horiuchi.pokecom.MainActivity.dpdx_org;
 import static tk.horiuchi.pokecom.SubActivityBase.beep_enable;
 import static tk.horiuchi.pokecom.SubActivityBase.clock_emulate_enable;
 import static tk.horiuchi.pokecom.SubActivityBase.debugText;
 import static tk.horiuchi.pokecom.SubActivityBase.debug_info;
-import static tk.horiuchi.pokecom.SubActivityBase.kb;
 
 /**
  * Created by yoshimine on 2017/07/24.
@@ -375,6 +368,7 @@ public class Sc61860Base implements Serializable {
         */
 
 
+        /*
         if (keyBufCnt != 0) {
             keyBufCnt--;
             if (keyBufCnt == 0) {
@@ -383,6 +377,7 @@ public class Sc61860Base implements Serializable {
                 Log.w("mainloop", String.format("KeyBufCnt Cleared."));
             }
         }
+        */
     }
 
     public void ticTac() {

@@ -20,31 +20,30 @@ public class SubActivity1360 extends SubActivityBase {
     private final int BASIC_END_ADR_L   = 0xffd9;
     private final int BASIC_END_ADR_H   = 0xffda;
 
-
-    private int[] mBtnResIds = {
-            R.id.buttonMODE, R.id.buttonBRK, R.id.buttonDA, R.id.buttonUA, R.id.buttonLA, R.id.buttonRA,
-            R.id.buttonDEL, R.id.buttonINS, R.id.buttonSHIFT2, R.id.buttonCE,
-
-            R.id.buttonSHIFT,
-            R.id.buttonQ, R.id.buttonW, R.id.buttonE, R.id.buttonR, R.id.buttonT,
-            R.id.buttonY, R.id.buttonU, R.id.buttonI, R.id.buttonO, R.id.buttonP,
-            R.id.buttonDEF,
-            R.id.buttonA, R.id.buttonS, R.id.buttonD, R.id.buttonF, R.id.buttonG,
-            R.id.buttonH, R.id.buttonJ, R.id.buttonK, R.id.buttonL, R.id.buttonEQ,
-            R.id.buttonKANA,
-            R.id.buttonZ, R.id.buttonX, R.id.buttonC, R.id.buttonV, R.id.buttonB,
-            R.id.buttonN, R.id.buttonM, R.id.buttonSPC, R.id.buttonENTER,
-
-            R.id.button7, R.id.button8, R.id.button9, R.id.buttonK1, R.id.buttonK2,
-            R.id.button4, R.id.button5, R.id.button6, R.id.buttonDIV, R.id.buttonCLN,
-            R.id.button1, R.id.button2, R.id.button3, R.id.buttonMLT, R.id.buttonSCLN,
-            R.id.button0, R.id.buttonDOT, R.id.buttonPLS, R.id.buttonMINUS, R.id.buttonCOMMA
-
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mBtnResIds = new int[] {
+                R.id.buttonMODE, R.id.buttonBRK, R.id.buttonDA, R.id.buttonUA, R.id.buttonLA, R.id.buttonRA,
+                R.id.buttonDEL, R.id.buttonINS, R.id.buttonSHIFT2, R.id.buttonCE,
+
+                R.id.buttonSHIFT,
+                R.id.buttonQ, R.id.buttonW, R.id.buttonE, R.id.buttonR, R.id.buttonT,
+                R.id.buttonY, R.id.buttonU, R.id.buttonI, R.id.buttonO, R.id.buttonP,
+                R.id.buttonDEF,
+                R.id.buttonA, R.id.buttonS, R.id.buttonD, R.id.buttonF, R.id.buttonG,
+                R.id.buttonH, R.id.buttonJ, R.id.buttonK, R.id.buttonL, R.id.buttonEQ,
+                R.id.buttonKANA,
+                R.id.buttonZ, R.id.buttonX, R.id.buttonC, R.id.buttonV, R.id.buttonB,
+                R.id.buttonN, R.id.buttonM, R.id.buttonSPC, R.id.buttonENTER,
+
+                R.id.button7, R.id.button8, R.id.button9, R.id.buttonK1, R.id.buttonK2,
+                R.id.button4, R.id.button5, R.id.button6, R.id.buttonDIV, R.id.buttonCLN,
+                R.id.button1, R.id.button2, R.id.button3, R.id.buttonMLT, R.id.buttonSCLN,
+                R.id.button0, R.id.buttonDOT, R.id.buttonPLS, R.id.buttonMINUS, R.id.buttonCOMMA
+
+        };
 
         instance = this;
         activityId = 1360;
@@ -53,11 +52,16 @@ public class SubActivity1360 extends SubActivityBase {
         SurfaceView sv = (SurfaceView) findViewById(R.id.surfaceView);
         ml = new MainLoop1360(this, sv);
 
+        // キーボード作成
+        kb = new KeyBoard1350();
+
         // Buttonインスタンスの取得
         // ButtonインスタンスのリスナーをこのActivityクラスそのものにする
+        mBtnStatusCnt = new int[mBtnResIds.length];
         for (int i = 0; i < mBtnResIds.length; i++) {
-            //Log.w("LOG", "i="+i);
-            findViewById(mBtnResIds[i]).setOnClickListener(this);
+            mBtnStatusCnt[i] = 0;
+            //findViewById(mBtnResIds[i]).setOnClickListener(this);
+            findViewById(mBtnResIds[i]).setOnTouchListener(this);
         }
         // ボタンの枠表示を切り替える
         if (debug_info) {
@@ -65,9 +69,6 @@ public class SubActivity1360 extends SubActivityBase {
         } else {
             changeButtonFrame(mBtnResIds, false);
         }
-
-        // キーボード作成
-        kb = new KeyBoard1350();
 
         // デバッグウィンドウの設定
         setDebugWindow((TextView) findViewById(R.id.debugWindow));
@@ -120,9 +121,9 @@ public class SubActivity1360 extends SubActivityBase {
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        super.onClick(v);
-    }
+    //@Override
+    //public void onClick(View v) {
+    //    super.onClick(v);
+    //}
 
 }

@@ -26,7 +26,7 @@ public class SubActivity1251 extends SubActivityBase12xx {
     private final int BASIC_END_ADR_L   = 0xc6e3;
     private final int BASIC_END_ADR_H   = 0xc6e4;
 
-
+    /*
     private int[] mBtnResIds = {
             R.id.buttonDEF, R.id.buttonSHIFT,
             R.id.buttonDA, R.id.buttonUA, R.id.buttonLA, R.id.buttonRA, R.id.buttonBRK,
@@ -44,10 +44,29 @@ public class SubActivity1251 extends SubActivityBase12xx {
             R.id.buttonN, R.id.buttonM, R.id.buttonSPC, R.id.buttonENTER,
             R.id.button0, R.id.buttonDOT, R.id.buttonPLS, R.id.buttonMINUS
     };
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mBtnResIds = new int[] {
+                R.id.buttonDEF, R.id.buttonSHIFT,
+                R.id.buttonDA, R.id.buttonUA, R.id.buttonLA, R.id.buttonRA, R.id.buttonBRK,
+                R.id.button7, R.id.button8, R.id.button9, R.id.buttonCE,
+
+                R.id.buttonQ, R.id.buttonW, R.id.buttonE, R.id.buttonR, R.id.buttonT,
+                R.id.buttonY, R.id.buttonU, R.id.buttonI, R.id.buttonO, R.id.buttonP,
+                R.id.button4, R.id.button5, R.id.button6, R.id.buttonDIV,
+
+                R.id.buttonA, R.id.buttonS, R.id.buttonD, R.id.buttonF, R.id.buttonG,
+                R.id.buttonH, R.id.buttonJ, R.id.buttonK, R.id.buttonL, R.id.buttonEQ,
+                R.id.button1, R.id.button2, R.id.button3, R.id.buttonMLT,
+
+                R.id.buttonZ, R.id.buttonX, R.id.buttonC, R.id.buttonV, R.id.buttonB,
+                R.id.buttonN, R.id.buttonM, R.id.buttonSPC, R.id.buttonENTER,
+                R.id.button0, R.id.buttonDOT, R.id.buttonPLS, R.id.buttonMINUS
+        };
 
         instance = this;
         activityId = 1251;
@@ -59,10 +78,16 @@ public class SubActivity1251 extends SubActivityBase12xx {
         SurfaceView sv = (SurfaceView) findViewById(R.id.surfaceView);
         ml = new MainLoop1251(this, sv);
 
+        // キーボード作成
+        kb = new KeyBoard1245();
+
         // Buttonインスタンスの取得
         // ButtonインスタンスのリスナーをこのActivityクラスそのものにする
+        mBtnStatusCnt = new int[mBtnResIds.length];
         for (int i = 0; i < mBtnResIds.length; i++) {
-            findViewById(mBtnResIds[i]).setOnClickListener(this);
+            mBtnStatusCnt[i] = 0;
+            //findViewById(mBtnResIds[i]).setOnClickListener(this);
+            findViewById(mBtnResIds[i]).setOnTouchListener(this);
         }
         // ボタンの枠表示を切り替える
         if (debug_info) {
@@ -101,10 +126,6 @@ public class SubActivity1251 extends SubActivityBase12xx {
 
             }
         });
-
-
-        // キーボード作成
-        kb = new KeyBoard1245();
 
         // デバッグウィンドウの設定
         setDebugWindow((TextView) findViewById(R.id.debugWindow));
@@ -151,11 +172,10 @@ public class SubActivity1251 extends SubActivityBase12xx {
 
     }
 
-    @Override
-    public void onClick(View v) {
-        super.onClick(v);
-
-    }
+    //@Override
+    //public void onClick(View v) {
+    //    super.onClick(v);
+    //}
 
     @Override
     public void onResume() {

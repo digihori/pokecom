@@ -8,122 +8,122 @@
     android:id="@+id/keyFrame">
 
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="hyp"
         style="@style/charButton"
         android:layout_column="0"
         android:layout_row="0"
         android:id="@+id/buttonHYP"/>
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="sin"
         style="@style/charButton"
         android:layout_column="1"
         android:layout_row="0"
         android:id="@+id/buttonSIN"/>
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="cos"
         style="@style/charButton"
         android:layout_column="2"
         android:layout_row="0"
         android:id="@+id/buttonCOS"/>
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="tan"
         style="@style/charButton"
         android:layout_column="3"
         android:layout_row="0"
         android:id="@+id/buttonTAN"/>
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="FE"
         style="@style/charButton"
         android:layout_column="4"
         android:layout_row="0"
         android:id="@+id/buttonFE"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="CE"
         style="@style/charButton"
         android:layout_column="5"
         android:layout_row="0"
         android:id="@+id/buttonCE"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="HEX"
         style="@style/charButton"
         android:layout_column="0"
         android:layout_row="1"
         android:id="@+id/buttonHEX"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="DEG"
         style="@style/charButton"
         android:layout_column="1"
         android:layout_row="1"
         android:id="@+id/buttonDEG"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="LN"
         style="@style/charButton"
         android:layout_column="2"
         android:layout_row="1"
         android:id="@+id/buttonLN"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="LOG"
         style="@style/charButton"
         android:layout_column="3"
         android:layout_row="1"
         android:id="@+id/buttonLOG"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="REC"
         style="@style/charButton"
         android:layout_column="4"
         android:layout_row="1"
         android:id="@+id/buttonREC"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="UD"
         style="@style/charButton"
         android:layout_column="5"
         android:layout_row="1"
         android:id="@+id/buttonUD"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="EXP"
         style="@style/charButton"
         android:layout_column="0"
         android:layout_row="2"
         android:id="@+id/buttonEXP"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="POW"
         style="@style/charButton"
         android:layout_column="1"
         android:layout_row="2"
         android:id="@+id/buttonPOW"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="ROOT"
         style="@style/charButton"
         android:layout_column="2"
         android:layout_row="2"
         android:id="@+id/buttonROOT"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="SQU"
         style="@style/charButton"
         android:layout_column="3"
         android:layout_row="2"
         android:id="@+id/buttonSQU"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="K1"
         style="@style/charButton"
         android:layout_column="4"
         android:layout_row="2"
         android:id="@+id/buttonK1"/>
 
-    <tk.horiuchi.pokecom.RepeatButton
+    <android.support.v7.widget.AppCompatButton
         android:text="K2"
         style="@style/charButton"
         android:layout_column="5"

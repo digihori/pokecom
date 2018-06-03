@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.GridLayout;
@@ -22,24 +23,19 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static tk.horiuchi.pokecom.MainActivity.cacheClear;
 import static tk.horiuchi.pokecom.MainActivity.title;
-import static tk.horiuchi.pokecom.Sc61860Base.code_cnt;
 import static tk.horiuchi.pokecom.Sc61860Base.kon_cnt;
 import static tk.horiuchi.pokecom.Sc61860Base.mainram;
 
-public class SubActivityBase extends Activity implements View.OnClickListener {
+public class SubActivityBase extends Activity implements View.OnTouchListener {
     protected static SubActivityBase instance = null;
     public static boolean nosave = false;
     protected int activityId;
@@ -71,6 +67,10 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
     protected int basicStartAdrH;
     protected int basicEndAdrL;
     protected int basicEndAdrH;
+
+    public static int[] mBtnResIds;
+    protected int[] mBtnStatusCnt;
+    //public static Boolean[] mBtnStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +106,23 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
 
             default_path = path = Environment.getExternalStorageDirectory().getPath()+"/pokecom";
             Log.w("onCreate", "path="+path);
+
+            final Handler _handler1 = new Handler();
+            final int DELAY1 = 20;
+            _handler1.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < mBtnStatusCnt.length; i++) {
+                        if (mBtnStatusCnt[i] > 0) {
+                            mBtnStatusCnt[i]--;
+                            if (mBtnStatusCnt[i] == 0) {
+                                kb.setBtnStatus(mBtnResIds[i], false);
+                            }
+                        }
+                    }
+                    _handler1.postDelayed(this, DELAY1);
+                }
+            }, DELAY1);
         }
 
         Log.w("onCreate", String.format("--------- saveInstanceState=%d", (savedInstanceState == null)? 0 : 1));
@@ -287,8 +304,9 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
         //textView1.setText(value);
     }
 
-    public void onClick(View v) {
+    //public void onClick(View v) {
 
+        /*
         int c = v.getId();
         if (c == R.id.buttonBRK) {
             kon_cnt = 10;
@@ -296,6 +314,7 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
         if (c == R.id.buttonSHIFT2) {
             c = R.id.buttonSHIFT;
         }
+        */
         /*
         if (c == R.id.buttonZ) {
             for (int i = 0; i < 256; i++) {
@@ -310,16 +329,89 @@ public class SubActivityBase extends Activity implements View.OnClickListener {
         }
         */
 
-        kb.setBuf(c);
+        //kb.setBuf(c);
         //keyBuf = v.getId();
 
         //Log.w("LOG", "KEY="+c);
 
-        if (vibrate_enable) {
-            vib.vibrate(10);
+        //if (vibrate_enable) {
+        //    vib.vibrate(10);
+        //}
+
+    //}
+
+
+    protected int getBtnIdx(int id) {
+        for (int idx = 0; idx < mBtnResIds.length; idx++) {
+            if (id == mBtnResIds[idx]) return idx;
+        }
+        return -1;
+    }
+
+    /*
+    protected void setBtnStatus(int id, boolean sts) {
+        int idx = getBtnIdx(id);
+        if (idx != -1) mBtnStatus[idx] = sts;
+    }
+
+    public int getPressBtnId() {
+        for (int idx = 0; idx < mBtnResIds.length; idx++) {
+            if (mBtnStatus[idx]) return mBtnResIds[idx];
+        }
+        return 0;
+    }
+    */
+
+    public boolean onTouch(View v, MotionEvent event) {
+        int id = v.getId();
+
+        if (id == R.id.buttonSHIFT2) {
+            id = R.id.buttonSHIFT;
         }
 
+        int eventAction = event.getActionMasked();
+
+        switch (eventAction) {
+            case MotionEvent.ACTION_DOWN:
+                //Log.w("onTouch", "DOWN");
+                //kb.setBtnStatus(id, true);
+                //mBtnStatusCnt[getBtnIdx(id)] = -1;
+                //break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                //Log.w("onTouch", "POINTER_DOWN");
+                Log.w("onTouch", "DOWN");
+                kb.setBtnStatus(id, true);
+                mBtnStatusCnt[getBtnIdx(id)] = -1;
+                if (id == R.id.buttonBRK) {
+                    kon_cnt = 10;
+                }
+                if (vibrate_enable) {
+                    vib.vibrate(10);
+                }
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                //Log.w("onTouch", "POINTER_UP");
+                //kb.setBtnStatus(id, false);
+                //mBtnStatusCnt[getBtnIdx(id)] = 3;
+                //break;
+            case MotionEvent.ACTION_UP:
+                //Log.w("onTouch", "UP");
+                //kb.setBtnStatus(id, false);
+                //mBtnStatusCnt[getBtnIdx(id)] = 3;
+                //break;
+            case MotionEvent.ACTION_CANCEL:
+                //Log.w("onTouch", "CANCEL");
+                Log.w("onTouch", "UP");
+                //kb.setBtnStatus(id, false);
+                mBtnStatusCnt[getBtnIdx(id)] = 3;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                //Log.w("onTouch", "MOVE");
+                break;
+        }
+        return false;
     }
+
 
     protected int hibyte(int x) {
         return((x & 0xff00) >> 8);

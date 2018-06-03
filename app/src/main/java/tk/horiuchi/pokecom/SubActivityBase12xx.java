@@ -1,11 +1,6 @@
 package tk.horiuchi.pokecom;
 
 
-import android.util.Log;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class SubActivityBase12xx extends SubActivityBase {
 
     /*

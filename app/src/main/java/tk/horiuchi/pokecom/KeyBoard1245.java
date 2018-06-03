@@ -10,7 +10,7 @@ public class KeyBoard1245 extends KeyboardBase {
         super();
 
         KEYNM = 11;
-        keym = new int[KEYNM];
+        //keym = new int[KEYNM];
 
         // スキャンテーブルの初期化
         scandef = new int[] {
@@ -25,5 +25,11 @@ public class KeyBoard1245 extends KeyboardBase {
                 KNUL,KNUL,KNUL,KNUL,KNUL, KNUL,R.id.buttonL,R.id.buttonENTER,
                 KNUL,KNUL,KNUL,KNUL,KNUL, KNUL,KNUL,R.id.button0,
                 KNUL,KNUL,KNUL,KNUL,KNUL, KNUL,KNUL,KNUL};
+
+        mBtnStatus = new int[KEYNM];
+        for (int i = 0; i < KEYNM; i++) {
+            mBtnStatus[i] = 0;
+        }
+
     }
 }

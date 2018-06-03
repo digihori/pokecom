@@ -16,34 +16,34 @@ public class SubActivity1450 extends SubActivityBase {
     private final int BASIC_END_ADR_L   = 0x5f03;
     private final int BASIC_END_ADR_H   = 0x5f04;
 
-    private int[] mBtnResIds = {
-            R.id.buttonCAL, R.id.buttonBASIC, R.id.buttonBRK, R.id.buttonKANA, R.id.buttonDAK,R.id.buttonCHO,
-            R.id.buttonDA,R.id.buttonUA,R.id.buttonLA,R.id.buttonRA,R.id.buttonSHIFT,
-            R.id.button7, R.id.button8, R.id.button9, R.id.buttonDIV, R.id.buttonXM,
-
-            R.id.buttonLOCK,
-            R.id.buttonQ, R.id.buttonW, R.id.buttonE, R.id.buttonR, R.id.buttonT,
-            R.id.buttonY, R.id.buttonU, R.id.buttonI, R.id.buttonO, R.id.buttonP,
-            R.id.button4, R.id.button5, R.id.button6, R.id.buttonMLT, R.id.buttonRM,
-
-            R.id.buttonDEF,
-            R.id.buttonA, R.id.buttonS, R.id.buttonD, R.id.buttonF, R.id.buttonG,
-            R.id.buttonH, R.id.buttonJ, R.id.buttonK, R.id.buttonL, R.id.buttonCOMMA,
-            R.id.button1, R.id.button2, R.id.button3, R.id.buttonMINUS, R.id.buttonMP,
-
-            R.id.buttonSML,
-            R.id.buttonZ, R.id.buttonX, R.id.buttonC, R.id.buttonV, R.id.buttonB,
-            R.id.buttonN, R.id.buttonM, R.id.buttonSPC, R.id.buttonENTER,
-            R.id.button0, R.id.buttonPM, R.id.buttonDOT, R.id.buttonPLS, R.id.buttonEQ,
-
-            R.id.buttonHYP, R.id.buttonSIN, R.id.buttonCOS, R.id.buttonTAN, R.id.buttonFE, R.id.buttonCE,
-            R.id.buttonHEX, R.id.buttonDEG, R.id.buttonLN, R.id.buttonLOG, R.id.buttonREC, R.id.buttonUD,
-            R.id.buttonEXP, R.id.buttonPOW, R.id.buttonROOT, R.id.buttonSQU, R.id.buttonK1, R.id.buttonK2
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mBtnResIds = new int[] {
+                R.id.buttonCAL, R.id.buttonBASIC, R.id.buttonBRK, R.id.buttonKANA, R.id.buttonDAK,R.id.buttonCHO,
+                R.id.buttonDA,R.id.buttonUA,R.id.buttonLA,R.id.buttonRA,R.id.buttonSHIFT,
+                R.id.button7, R.id.button8, R.id.button9, R.id.buttonDIV, R.id.buttonXM,
+
+                R.id.buttonLOCK,
+                R.id.buttonQ, R.id.buttonW, R.id.buttonE, R.id.buttonR, R.id.buttonT,
+                R.id.buttonY, R.id.buttonU, R.id.buttonI, R.id.buttonO, R.id.buttonP,
+                R.id.button4, R.id.button5, R.id.button6, R.id.buttonMLT, R.id.buttonRM,
+
+                R.id.buttonDEF,
+                R.id.buttonA, R.id.buttonS, R.id.buttonD, R.id.buttonF, R.id.buttonG,
+                R.id.buttonH, R.id.buttonJ, R.id.buttonK, R.id.buttonL, R.id.buttonCOMMA,
+                R.id.button1, R.id.button2, R.id.button3, R.id.buttonMINUS, R.id.buttonMP,
+
+                R.id.buttonSML,
+                R.id.buttonZ, R.id.buttonX, R.id.buttonC, R.id.buttonV, R.id.buttonB,
+                R.id.buttonN, R.id.buttonM, R.id.buttonSPC, R.id.buttonENTER,
+                R.id.button0, R.id.buttonPM, R.id.buttonDOT, R.id.buttonPLS, R.id.buttonEQ,
+
+                R.id.buttonHYP, R.id.buttonSIN, R.id.buttonCOS, R.id.buttonTAN, R.id.buttonFE, R.id.buttonCE,
+                R.id.buttonHEX, R.id.buttonDEG, R.id.buttonLN, R.id.buttonLOG, R.id.buttonREC, R.id.buttonUD,
+                R.id.buttonEXP, R.id.buttonPOW, R.id.buttonROOT, R.id.buttonSQU, R.id.buttonK1, R.id.buttonK2
+        };
 
         instance = this;
         activityId = 1450;
@@ -53,10 +53,16 @@ public class SubActivity1450 extends SubActivityBase {
         SurfaceView sv = (SurfaceView) findViewById(R.id.surfaceView);
         ml = new MainLoop1450(this, sv);
 
+        // キーボード作成
+        kb = new KeyBoard1460();
+
         // Buttonインスタンスの取得
         // ButtonインスタンスのリスナーをこのActivityクラスそのものにする
+        mBtnStatusCnt = new int[mBtnResIds.length];
         for (int i = 0; i < mBtnResIds.length; i++) {
-            findViewById(mBtnResIds[i]).setOnClickListener(this);
+            mBtnStatusCnt[i] = 0;
+            //findViewById(mBtnResIds[i]).setOnClickListener(this);
+            findViewById(mBtnResIds[i]).setOnTouchListener(this);
         }
         // ボタンの枠表示を切り替える
         if (debug_info) {
@@ -64,9 +70,6 @@ public class SubActivity1450 extends SubActivityBase {
         } else {
             changeButtonFrame(mBtnResIds, false);
         }
-
-        // キーボード作成
-        kb = new KeyBoard1460();
 
         // デバッグウィンドウの設定
         setDebugWindow((TextView) findViewById(R.id.debugWindow));
@@ -119,10 +122,9 @@ public class SubActivity1450 extends SubActivityBase {
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        super.onClick(v);
-
-    }
+    //@Override
+    //public void onClick(View v) {
+    //    super.onClick(v);
+    //}
 
 }

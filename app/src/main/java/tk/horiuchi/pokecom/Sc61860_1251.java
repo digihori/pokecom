@@ -6,13 +6,11 @@ import android.util.Log;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import static tk.horiuchi.pokecom.KeyboardBase.keyBufCnt;
-import static tk.horiuchi.pokecom.KeyboardBase.keym;
+import static tk.horiuchi.pokecom.KeyboardBase.mBtnStatus;
 import static tk.horiuchi.pokecom.MainActivity.rom_path;
 import static tk.horiuchi.pokecom.SubActivity1251.prog_mode;
 import static tk.horiuchi.pokecom.MainLoop1251.digi;
 import static tk.horiuchi.pokecom.MainLoop1251.state;
-import static tk.horiuchi.pokecom.SubActivityBase.kb;
 import static tk.horiuchi.pokecom.SubActivityBase.nosave;
 
 /**
@@ -229,6 +227,7 @@ public class Sc61860_1251 extends Sc61860Base {
 
         iramw(AREG, 0);
 
+        /*
         if (iacnt == 0) {
             int c = kb.getBuf();
             if (c != 0) {
@@ -236,11 +235,13 @@ public class Sc61860_1251 extends Sc61860Base {
                 kb.keyscan(c);
             }
         }
+        */
 
         if ((iaval == 0) && (ibval != 0)) {
             jj = bit(ibval);
-            if (jj < 3 && keym[jj] != 0) {
-                iramw(AREG, keym[jj]);
+            if (jj < 3 && mBtnStatus[jj] != 0) {
+                iramw(AREG, mBtnStatus[jj]);
+                /*
                 keyBufCnt = 3000;
                 //Log.w("LOG", "ibval="+ibval+" keym["+jj+"]="+keym[jj]+" AREG="+iramr(AREG));
                 //keym[jj] = 0;
@@ -250,12 +251,14 @@ public class Sc61860_1251 extends Sc61860Base {
                     kb.keyclear();
                     keyBufCnt = 0;
                 }
+                */
             }
         }
         else if (iaval != 0) {
             jj = bit(iaval);
-            if (jj < 7 && keym[jj + 3] != 0) {
-                iramw(AREG, keym[jj + 3]);
+            if (jj < 7 && mBtnStatus[jj + 3] != 0) {
+                iramw(AREG, mBtnStatus[jj + 3]);
+                /*
                 keyBufCnt = 300;
                 //Log.w("LOG", "iaval="+iaval+" keym["+(jj+3)+"]="+keym[jj+3]+" AREG="+iramr(AREG));
                 //keym[jj+3] = 0;
@@ -265,6 +268,7 @@ public class Sc61860_1251 extends Sc61860Base {
                     kb.keyclear();
                     keyBufCnt = 0;
                 }
+                */
             }
         }
         if (iramr(AREG) == 0) {
