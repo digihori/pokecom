@@ -24,6 +24,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -103,6 +105,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Log.w("Main", String.format("densityDpi=%d\n", metrics.densityDpi));
         Log.w("Main", String.format("scaledDensity=%f\n", metrics.scaledDensity));
 
+        String dtext = String.format("widthPixels=%d\n", metrics.widthPixels);
+        dtext += String.format("heightPixels=%d\n", metrics.heightPixels);
+        dtext += String.format("Xdpi=%f\n", metrics.xdpi);
+        dtext += String.format("Ydpi=%f\n", metrics.ydpi);
+        dtext += String.format("density=%f\n", metrics.density);
+        dtext += String.format("densityDpi=%d\n", metrics.densityDpi);
+        dtext += String.format("scaledDensity=%f\n", metrics.scaledDensity);
 
         // タイトルバーの表示を更新する
         title = "Pokecom GO";
@@ -137,6 +146,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
             Log.w("Main", String.format("deviceType=phone(%d) scale=%f\n", deviceType, dpdx));
         }
+
+        dtext += String.format("deviceType=%d scale=%f\n", deviceType, dpdx);
+        //((TextView)findViewById(R.id.debug_msg)).setText(dtext);
 
         /*
         // 解像度によって表示部のスケールを微調整する
