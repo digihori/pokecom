@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.IllegalFormatCodePointException;
+import java.util.IllegalFormatException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -772,6 +774,19 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
         return tmp;
     }
 
+    private static String trimLeft(String s) {
+        int startPos = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) != ' ') {
+                startPos = i;
+                break;
+            }
+        }
+
+        return s.substring(startPos);
+
+    }
+
     protected int[] bas2code(int[] source) {
         int[] dest = new int[0x8000];
         int[] ret;
@@ -790,13 +805,27 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
         while (r < len) {
             //Log.w("LOG", String.format("--- 行区切り ---"));
             // 1行読み込み
+            // 2バイト文字は読み捨てる
             str = "";
             while ((c = source[r++]) != '\n') {
                 if (c == '\r') continue;    // \rは読み捨てる
-                str += String.format("%c", c);
+                String s = "";
+                try {
+                    // 1byte文字以外はExceptionを吐くのでcatchで拾って読み捨てる
+                    s = String.format("%c", c);
+                } catch (IllegalFormatCodePointException e) {
+                    Log.w("load", "IlleagalFormatCodeException!!!");
+                } catch (IllegalFormatException e) {
+                    Log.w("load", "IlleagalFormatException!!!");
+                }
+                //str += String.format("%c", c);
+                str += s;
                 if (r >= len) break;
             }
+            // 先頭の空白を削除する
+            str = trimLeft(str);
             //Log.w("LOG", String.format("%s", str));
+
 
             talken = split(str);
             //for (int i = 0; i < talken.length; i++) {
