@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 def applicationName = "pokecom"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "tk.horiuchi.pokecom"
         minSdkVersion 15
-        targetSdkVersion 28
-        versionCode 18
-        versionName "1.02.02"
+        targetSdkVersion 29
+        versionCode 20
+        versionName "1.04.00"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         archivesBaseName = "${applicationName}-${versionName}"
     }
