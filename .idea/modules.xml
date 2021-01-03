@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/pokecom.iml" filepath="$PROJECT_DIR$/pokecom.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/pokecom-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/pokecom-app.iml" group="pokecom/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/work-pokecom.iml" filepath="$PROJECT_DIR$/.idea/modules/work-pokecom.iml" group="pokecom" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/pokecom.iml" filepath="$PROJECT_DIR$/.idea/modules/pokecom.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/pokecom.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/pokecom.app.iml" />
     </modules>
   </component>
 </project>

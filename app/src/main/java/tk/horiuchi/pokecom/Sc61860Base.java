@@ -34,7 +34,6 @@ public class Sc61860Base implements Serializable {
 
     protected Context context = null;
     protected Beep beep = null;
-    private int beep_cnt = 0;
 
     /* SC61860 registers */
     protected int pc = 0x0000;
@@ -121,8 +120,8 @@ public class Sc61860Base implements Serializable {
 
         LoadRomImage(c);
 
-        //beep = new Beep();
-        //beep.start();
+        beep = new Beep();
+        beep.start();
 
         code_cnt = new int[256];
         for (int i = 0; i < 256; i++) {
@@ -271,6 +270,8 @@ public class Sc61860Base implements Serializable {
 
         if (halt) return;
 
+        beep.count();
+
         if (clock_emulate_enable) {
             if (cpu_cnt == 0) {
                 oldTime = System.currentTimeMillis();
@@ -309,33 +310,6 @@ public class Sc61860Base implements Serializable {
 
         tick = 1;
 
-        // beep エミュレーション
-        // beep on の状態でメインループを回った回数で擬似的にブザーの周波数を決める（かなり苦しいけど）
-        // beep_freq 変数はBeepクラスで参照している
-        /*
-        if (beep_on) {
-            beep_off_cnt = 0;
-            beep_on_cnt++;
-        } else {
-            if (beep_on_cnt != 0) {
-                // オン状態のカウンタ値から周波数を決める
-                if (beep_off_cnt_last != 0) {
-                    if (beep_on_cnt > 100) {
-                        beep_freq = 2000;
-                    } else {
-                        beep_freq = 30000 / (beep_on_cnt * 2.5);
-                    }
-                    Log.w("Sc61860Base", String.format("beep on --- freq=%d", (int)beep_freq));
-                } else {
-                    beep_freq = 0;
-                    //Log.w("Sc61860Base", String.format("beep off --- freq=%d", (int)beep_freq));
-                }
-            }
-            beep_on_cnt = 0;
-            beep_off_cnt_last = ++beep_off_cnt;
-        }
-        */
-
         current_pc = pc;
         opcode = memr(pc);
         cmdHook();
@@ -353,31 +327,6 @@ public class Sc61860Base implements Serializable {
         }
 
 
-        /*
-        if (current_pc == 0x4000) stepdebug = true;
-        if (stepdebug) {
-            String text = String.format(
-                    "PC=%04x([%s]%02x %02x %02x %02x) P=%02x Q=%02x R=%02x DP=%04x I=%02x J=%02x A=%02x B=%02x XhXl=%02x%02x YhYl=%02x%02x PA=%02x PB=%02x PT=%02x\n",
-                    current_pc, instractionCode[opcode], opcode,
-                    memr(current_pc+1), memr(current_pc+2), memr(current_pc+3),
-                    preg, qreg, rreg, dp, iram[IREG], iram[JREG], iram[AREG], iram[BREG],
-                    iram[XHREG], iram[XLREG], iram[YHREG], iram[YLREG], iaval, ibval, testport);
-            Log.w("STEP", text);
-        } else {
-        }
-        */
-
-
-        /*
-        if (keyBufCnt != 0) {
-            keyBufCnt--;
-            if (keyBufCnt == 0) {
-                kb.keyclear();
-                iacnt = 0;
-                Log.w("mainloop", String.format("KeyBufCnt Cleared."));
-            }
-        }
-        */
     }
 
     public void ticTac() {
@@ -2345,6 +2294,7 @@ public class Sc61860Base implements Serializable {
             outf();
             iTick += 3;
         }
+
     }
 
 
@@ -2375,18 +2325,15 @@ public class Sc61860Base implements Serializable {
             }
             if ((ctrlval & 0x30) == 0x30) {
                 if (beep_enable) {
-                    beep_on = true;
-                    //beep.beep5khz();
+                    beep.beep4k();
                 }
             } else if ((ctrlval & 0x30) == 0x20) {
                 if (beep_enable) {
-                    beep_on = false;
-                    //beep.beepStop();
+                    beep.beep2k();
                 }
             } else if ((ctrlval & 0x30) == 0) {
                 if (beep_enable) {
-                    beep_on = false;
-                    //beep.beepStop();
+                    beep.beepOff();
                 }
             }
             iTick += 2;
