@@ -10,6 +10,7 @@ import static tk.horiuchi.pokecom.KeyboardBase.mBtnStatus;
 import static tk.horiuchi.pokecom.MainActivity.rom_path;
 import static tk.horiuchi.pokecom.MainLoop1460.digi;
 import static tk.horiuchi.pokecom.MainLoop1460.state;
+import static tk.horiuchi.pokecom.SubActivityBase.beep_enable;
 import static tk.horiuchi.pokecom.SubActivityBase.nosave;
 
 /**
@@ -77,6 +78,16 @@ public class Sc61860_1460 extends Sc61860Base {
                 nosave = true;
                 SubActivity1460.getInstance().actSave();
                 opcode = 0x37;
+                break;
+            case 0x40ed:    // BEEP
+                Log.w("cmfHook", String.format("exec BEEP(%d)", iram[DRA2] - '0'));
+                Log.w("cmfHook", String.format("%02X %02X %02X %02X %02X %02X %02X %02X", iram[DRA0],iram[DRA1],iram[DRA2],iram[DRA3],iram[DRA4],iram[DRA5],iram[DRA6],iram[DRA7]));
+                if (beep_enable) {
+                    beepDisable = 500;
+                    int n = iram[DRA2] - '0';
+                    if (n > 9) n = 9;
+                    beep._2000Hz(n);
+                }
                 break;
             default:
                 break;

@@ -5,7 +5,6 @@ import android.util.Log;
 
 import java.io.Serializable;
 
-import static tk.horiuchi.pokecom.Beep.beep_on;
 import static tk.horiuchi.pokecom.MainActivity.dpdx_org;
 import static tk.horiuchi.pokecom.SubActivityBase.beep_enable;
 import static tk.horiuchi.pokecom.SubActivityBase.clock_emulate_enable;
@@ -92,6 +91,14 @@ public class Sc61860Base implements Serializable {
     protected final int MREG = 10;
     protected final int NREG = 11;
 
+    protected final int DRA0 = 0x10;
+    protected final int DRA1 = 0x11;
+    protected final int DRA2 = 0x12;
+    protected final int DRA3 = 0x13;
+    protected final int DRA4 = 0x14;
+    protected final int DRA5 = 0x15;
+    protected final int DRA6 = 0x16;
+    protected final int DRA7 = 0x17;
 
     protected final int IAPORT = 0x5c;
     protected final int IBPORT = 0x5d;
@@ -107,11 +114,12 @@ public class Sc61860Base implements Serializable {
     protected int cpu_cnt = 0;
 
     protected int cnt = 0;
+    protected int beepDisable;
 
-    protected int beep_on_cnt = 0;
-    protected int beep_off_cnt = 0;
-    protected int beep_off_cnt_last = 0;
-    public static double beep_freq = 0;
+    //protected int beep_on_cnt = 0;
+    //protected int beep_off_cnt = 0;
+    //protected int beep_off_cnt_last = 0;
+    //public static double beep_freq = 0;
 
     public Sc61860Base(Context c) {
         context = c;
@@ -270,7 +278,10 @@ public class Sc61860Base implements Serializable {
 
         if (halt) return;
 
-        beep.count();
+        if (beep_enable) {
+            beep.beepMain();
+            if (beepDisable > 0) beepDisable--;
+        }
 
         if (clock_emulate_enable) {
             if (cpu_cnt == 0) {
@@ -2324,15 +2335,15 @@ public class Sc61860Base implements Serializable {
                 //Log.w("LOG", "power off");
             }
             if ((ctrlval & 0x30) == 0x30) {
-                if (beep_enable) {
+                if (beepDisable == 0 && beep_enable) {
                     beep.beep4k();
                 }
             } else if ((ctrlval & 0x30) == 0x20) {
-                if (beep_enable) {
+                if (beepDisable == 0 && beep_enable) {
                     beep.beep2k();
                 }
             } else if ((ctrlval & 0x30) == 0) {
-                if (beep_enable) {
+                if (beepDisable == 0 && beep_enable) {
                     beep.beepOff();
                 }
             }
