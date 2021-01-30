@@ -336,6 +336,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         File app_dir = new File(app_path);
         if (!app_dir.exists()) {
             app_dir.mkdir();
+            Log.w("reloadRomList", String.format("mkdir ->'%s'", app_path));
         }
         File rom_dir = new File(rom_path);
         if (!rom_dir.exists()) {

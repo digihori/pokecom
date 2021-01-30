@@ -41,7 +41,7 @@ public class DigitalSoundGenerator {
      * @param soundLengh 音の長さ
      * @return 音声データ
      */
-    public byte[] getSound(double frequency, double soundLength) {
+    public byte[] getSound1(double frequency, double soundLength) {
         // byteバッファを作成
         byte[] buffer = new byte[(int)Math.ceil(bufferSize * soundLength)];
         for(int i=0; i<buffer.length; i++) {
@@ -50,6 +50,21 @@ public class DigitalSoundGenerator {
             buffer[i] = (byte)(wave > 0.0 ? Byte.MAX_VALUE : Byte.MIN_VALUE);
         }
 
+        return buffer;
+    }
+
+    public byte[] getSound(double frequency, double length) {
+        byte[] buffer = new byte[(int)(bufferSize * length)];
+        int pulse = (int)(this.sampleRate / frequency / 2);
+        int i, j=0;
+        while (j < buffer.length) {
+            for (i = 0; i < pulse && j < buffer.length; i++) {
+                buffer[j++] = Byte.MAX_VALUE;
+            }
+            for (i = 0; i < pulse && j < buffer.length; i++) {
+                buffer[j++] = Byte.MIN_VALUE;
+            }
+        }
         return buffer;
     }
 

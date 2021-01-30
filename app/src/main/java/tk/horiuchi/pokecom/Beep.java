@@ -34,7 +34,7 @@ public class Beep extends Thread {
 
     public Beep() {
         // SoundGeneratorクラスをサンプルレート44100で作成
-        soundGenerator = new DigitalSoundGenerator(44100, 44100);
+        soundGenerator = new DigitalSoundGenerator(16000, 8000);
         //soundGenerator = new DigitalSoundGenerator(8000, 8000);
 
         // 再生用AudioTrackは、同じサンプルレートで初期化したものを利用する
@@ -127,7 +127,7 @@ public class Beep extends Thread {
 
     private void calcFrequency(int puls_count) {
         freq = 15000 / (puls_count + 66 / puls_count * 2);
-        //Log.w("-----calc freq-----", String.format("puls_count=%d freq=%f", puls_count, freq));
+        Log.w("-----calc freq-----", String.format("puls_count=%d freq=%f", puls_count, freq));
         beep = true;
     }
 

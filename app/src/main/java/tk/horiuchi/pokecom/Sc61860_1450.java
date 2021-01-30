@@ -73,13 +73,13 @@ public class Sc61860_1450 extends Sc61860Base {
                 opcode = 0x37;
                 break;
             case 0xd4d6:    // BEEP
-                Log.w("cmfHook", String.format("exec BEEP(%d)", iram[DRA2] - '0'));
-                Log.w("cmfHook", String.format("%02X %02X %02X %02X %02X %02X %02X %02X", iram[DRA0],iram[DRA1],iram[DRA2],iram[DRA3],iram[DRA4],iram[DRA5],iram[DRA6],iram[DRA7]));
+                //Log.w("cmfHook", String.format("exec BEEP(%d)", iram[DRA2] - '0'));
+                //Log.w("cmfHook", String.format("%02X %02X %02X %02X %02X %02X %02X %02X", iram[DRA0],iram[DRA1],iram[DRA2],iram[DRA3],iram[DRA4],iram[DRA5],iram[DRA6],iram[DRA7]));
                 if (beep_enable) {
                     beepDisable = 500;
-                    int n = iram[DRA2] - '0';
-                    if (n > 9) n = 9;
-                    beep._2000Hz(n);
+                    //int n = iram[DRA2] - '0';
+                    //if (n > 9) n = 9;
+                    beep._2000Hz(1);
                 }
                 break;
             default:

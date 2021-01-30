@@ -71,9 +71,9 @@ public class Sc61860_1402 extends Sc61860Base {
             case 0xc08e:    // BEEP
                 if (beep_enable) {
                     beepDisable = 500;
-                    int n = iram[DRA2] - '0';
-                    if (n > 9) n = 9;
-                    beep._2000Hz(n);
+                    //int n = iram[DRA2] - '0';
+                    //if (n > 9) n = 9;
+                    beep._2000Hz(1);
                 }
             default:
                 break;
