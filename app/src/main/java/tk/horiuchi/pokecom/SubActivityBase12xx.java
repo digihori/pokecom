@@ -1,6 +1,8 @@
 package tk.horiuchi.pokecom;
 
 
+import android.util.Log;
+
 public class SubActivityBase12xx extends SubActivityBase {
 
     /*
@@ -61,13 +63,19 @@ public class SubActivityBase12xx extends SubActivityBase {
         int r = 0, w = 0, c = 0;
         String str = "";
         dest[w++] = 0xff; // プログラム開始
-        String[] talken;
+        String[] token;
 
         boolean flg = false;
         while (r < len) {
             //Log.w("LOG", String.format("--- 行区切り ---"));
             // 1行読み込み
             str = "";
+            if (source[r] == '\n') {
+                // 空行は読み捨てる
+                Log.w("load", "blank line!");
+                r++;
+                continue;
+            }
             while ((c = source[r++]) != '\n') {
                 if (c == '\r') continue;    // \rは読み捨てる
                 str += String.format("%c", c);
@@ -75,10 +83,10 @@ public class SubActivityBase12xx extends SubActivityBase {
             }
             //Log.w("LOG", String.format("%s", str));
 
-            talken = split(str);
+            token = split(str);
 
             // 一つ目のトークンは必ず行番号
-            int line_num = Integer.parseInt(talken[0]);
+            int line_num = Integer.parseInt(token[0]);
             if (line_num == 0) break;   // パースに失敗したらこの行はスキップする
             int num100 = line_num / 100;
             int num10  = (line_num - num100 * 100) / 10;
@@ -90,17 +98,17 @@ public class SubActivityBase12xx extends SubActivityBase {
 
             // 次のトークンからはコマンド
             int temp;
-            for (int i = 1; i < talken.length; i++) {
-                if (i == 1 && talken[i].equals(":")) continue;  // 行番号の次がコロンの場合は読み捨て
+            for (int i = 1; i < token.length; i++) {
+                if (i == 1 && token[i].equals(":")) continue;  // 行番号の次がコロンの場合は読み捨て
 
-                if (i + 1 < talken.length &&
-                        (talken[i].equals("<") && talken[i+1].equals("=") ||
-                         talken[i].equals(">") && talken[i+1].equals("=") ||
-                         talken[i].equals("<") && talken[i+1].equals(">")) ) {
-                    temp = cmdname2code(talken[i]+talken[i+1]);
+                if (i + 1 < token.length &&
+                        (token[i].equals("<") && token[i+1].equals("=") ||
+                         token[i].equals(">") && token[i+1].equals("=") ||
+                         token[i].equals("<") && token[i+1].equals(">")) ) {
+                    temp = cmdname2code(token[i]+token[i+1]);
                     i++;
                 } else {
-                    temp = cmdname2code(talken[i]);
+                    temp = cmdname2code(token[i]);
                 }
                 if (temp != 0) {
                     dest[w++] = temp;
@@ -108,10 +116,10 @@ public class SubActivityBase12xx extends SubActivityBase {
                     //ll++;
 
                 } else {
-                    int n = talken[i].length();
+                    int n = token[i].length();
                     char[] ch = new char[1];
                     for (int j = 0; j < n; j++) {
-                        ch[0] = talken[i].charAt(j);
+                        ch[0] = token[i].charAt(j);
                         String tempStr = String.valueOf(ch);
                         dest[w++] = cmdname2code(tempStr);
                         //ll++;

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import static tk.horiuchi.pokecom.MainActivity.dpdx_org;
 import static tk.horiuchi.pokecom.SubActivityBase.beep_enable;
 import static tk.horiuchi.pokecom.SubActivityBase.clock_emulate_enable;
+import static tk.horiuchi.pokecom.SubActivityBase.cpuClockWait;
 import static tk.horiuchi.pokecom.SubActivityBase.debugText;
 import static tk.horiuchi.pokecom.SubActivityBase.debug_info;
 
@@ -283,7 +284,7 @@ public class Sc61860Base implements Serializable {
             if (beepDisable > 0) beepDisable--;
         }
 
-        if (clock_emulate_enable) {
+        if (cpuClockWait != 0) {
             if (cpu_cnt == 0) {
                 oldTime = System.currentTimeMillis();
                 iTick = 0;
@@ -293,7 +294,7 @@ public class Sc61860Base implements Serializable {
                 cpu_cnt = 0;
                 //Log.w("RUN", String.format("iTick = %d", iTick));
                 newTime = System.currentTimeMillis();
-                long sleepTime = iTick*2/CLOCK - (newTime - oldTime);
+                long sleepTime = iTick*cpuClockWait/CLOCK - (newTime - oldTime);
                 //long sleepTime = 20 - (newTime - oldTime);
 
                 if (sleepTime > 0) {

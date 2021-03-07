@@ -39,8 +39,8 @@
     <!-- preference strings -->
     <string name="preference_title">settings</string>
 
-    <string name="clock_emulate_checkbox_title">cpu clock</string>
-    <string name="clock_emulate_checkbox_summary">Enable emulation of cpu clock.</string>
+    <string name="clock_emulate_checkbox_title">cpu clock emulate</string>
+    <string name="clock_emulate_checkbox_summary">Set the cpu emulation speed.</string>
 
     <string name="vibrator_checkbox_title">viblation</string>
     <string name="vibrator_checkbox_summary">Activate vibrator function when key is pressed.</string>

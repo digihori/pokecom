@@ -21,5 +21,18 @@
     　　　　<item>2</item>
     　　　　<item>3</item>
     　　</string-array-->
+    <string-array name="cpu_clock_wait">
+        <item>no wait</item>
+        <item>fast</item>
+        <item>normal</item>
+        <item>slow</item>
+    </string-array>
+    <string-array name="cpu_clock_waitvalues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
 
 </resources>

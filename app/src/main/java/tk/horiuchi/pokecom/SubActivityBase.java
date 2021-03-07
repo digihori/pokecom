@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.IllegalFormatCodePointException;
 import java.util.IllegalFormatException;
 import java.util.regex.Matcher;
@@ -52,6 +53,7 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
     public static boolean debug_info = true;
     public static boolean beep_enable;
     public static boolean clock_emulate_enable;
+    public static int cpuClockWait;
     public static boolean vibrate_enable = true;
     public static int machine;
     public static final int PC1401=1;
@@ -92,7 +94,8 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
 
             // 設定値をロード
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-            clock_emulate_enable = sp.getBoolean("clock_emulate_checkbox_key", false);
+            //clock_emulate_enable = sp.getBoolean("clock_emulate_checkbox_key", false);
+            cpuClockWait = Integer.parseInt(sp.getString("cpu_clock_wait_key", "2"));
             debug_info = sp.getBoolean("debug_checkbox_key", false);
             beep_enable = sp.getBoolean("beep_checkbox_key", false);
             vibrate_enable = sp.getBoolean("vibrator_checkbox_key", true);
@@ -700,7 +703,7 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
             if (s.charAt(0) != '\\') continue;
 
             String regex = String.valueOf('\\')+s;
-            Log.w("split", String.format("code=%02x cmd='%s' regex='%s'", i, s, regex));
+            //Log.w("replaceSpecialChar", String.format("code=%02x cmd='%s' regex='%s'", i, s, regex));
             Pattern p = Pattern.compile(regex);
             Matcher m = p.matcher(str);
             if (m.find()) {
@@ -733,15 +736,32 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
         }
         //Log.w("split-REM", str2);
 
-        String[] DQ = new String[10];   // 10個まで（仮）
+        //String[] DQ = new String[10];   // 10個まで（仮）
+        ArrayList<String> DQ = new ArrayList<>();
         int n = 0;
         regex = "\".*?\"";
         p = Pattern.compile(regex);
-        while (n < 10) {
+        while (true /*n < 10*/) {
             m = p.matcher(str2);
             if (m.find()) {
-                DQ[n] = m.group();
+                //DQ[n] = m.group();
+                DQ.add(m.group());
                 str2 = str2.replaceFirst(regex, " \\\\DQ"+n+" ");
+                Log.w("split", String.format("DQ[%d] = '%s'", n, m.group()));
+                n++;
+            } else {
+                break;
+            }
+        }
+        // 行末とダブルコートを同時に検索する表現がわからないので処理を分けた
+        regex = "\".*?$";
+        p = Pattern.compile(regex);
+        while (true) {
+            m = p.matcher(str2);
+            if (m.find()) {
+                DQ.add(m.group());
+                str2 = str2.replaceFirst(regex, " \\\\DQ"+n+" ");
+                Log.w("split", String.format("DQ[%d] = '%s'", n, m.group()));
                 n++;
             } else {
                 break;
@@ -765,7 +785,12 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
             if (tmp[i].equals("\\RM")) {
                 tmp[i] = RM;
             } else if (tmp[i].equals("\\DQ"+j)) {
-                tmp[i] = DQ[j];
+                //tmp[i] = DQ[j];
+                try {
+                    tmp[i] = DQ.get(j);
+                } catch (IndexOutOfBoundsException e) {
+                    ;
+                }
                 j++;
             }
             //Log.w("split", tmp[i]);
@@ -800,13 +825,19 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
         int r = 0, w = 0, c = 0;
         String str = "";
         dest[w++] = 0xff; // プログラム開始
-        String[] talken;
+        String[] token;
 
         while (r < len) {
             //Log.w("LOG", String.format("--- 行区切り ---"));
             // 1行読み込み
             // 2バイト文字は読み捨てる
             str = "";
+            if (source[r] == '\n') {
+                // 空行は読み捨てる
+                Log.w("load", "blank line!");
+                r++;
+                continue;
+            }
             while ((c = source[r++]) != '\n') {
                 if (c == '\r') continue;    // \rは読み捨てる
                 String s = "";
@@ -827,38 +858,45 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
             //Log.w("LOG", String.format("%s", str));
 
 
-            talken = split(str);
-            //for (int i = 0; i < talken.length; i++) {
-            //    Log.w("LOAD", String.format("%s", talken[i]));
+            token = split(str);
+            //for (int i = 0; i < token.length; i++) {
+            //    Log.w("LOAD", String.format("%s", token[i]));
             //}
 
             // 一つ目のトークンは必ず行番号
-            int line_num = Integer.parseInt(talken[0]);
+            int line_num;
+            try {
+                line_num = Integer.parseInt(token[0]);
+            } catch (NumberFormatException e) {
+                Log.w("load", "NumberFormatException!!!");
+                // パースに失敗したらこの行はスキップする
+                continue;
+            }
+            if (line_num == 0) continue;   // パースに失敗したらこの行はスキップする
             dest[w++] = hibyte(line_num);
             dest[w++] = lobyte(line_num);
-            if (line_num == 0) break;   // パースに失敗したらこの行はスキップする
 
             int l = w++;
             int ll = 0;
 
             // 次のトークンからはコマンド
-            for (int i = 1; i < talken.length; i++) {
-                //Log.w("LOAD", String.format("talken[%d]=%s length=%d", i, talken[i], talken[i].length()));
-                //for (int j = 0; j < talken[i].length(); j++) {
-                //    Log.w("LOAD", String.format("%02x", (int)(talken[i].charAt(j))));
+            for (int i = 1; i < token.length; i++) {
+                //Log.w("LOAD", String.format("token[%d]=%s length=%d", i, token[i], token[i].length()));
+                //for (int j = 0; j < token[i].length(); j++) {
+                //    Log.w("LOAD", String.format("%02x", (int)(token[i].charAt(j))));
                 //}
-                if (i == 1 && talken[i].equals(":")) continue;  // 行番号の次がコロンの場合は読み捨て
-                int temp = cmdname2code(talken[i]);
+                if (i == 1 && token[i].equals(":")) continue;  // 行番号の次がコロンの場合は読み捨て
+                int temp = cmdname2code(token[i]);
                 if (temp != 0) {
                     dest[w++] = temp;
                     //Log.w("LOG", String.format("%02x", temp));
                     ll++;
 
                 } else {
-                    int n = talken[i].length();
+                    int n = token[i].length();
                     for (int j = 0; j < n; j++) {
-                        dest[w++] = (int) (talken[i].charAt(j));
-                        //Log.w("LOG", String.format("%s", talken[i].charAt(j)));
+                        dest[w++] = (int) (token[i].charAt(j));
+                        //Log.w("LOG", String.format("%s", token[i].charAt(j)));
                         ll++;
                     }
                 }
