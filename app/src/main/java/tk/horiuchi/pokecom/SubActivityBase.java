@@ -11,6 +11,8 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.InputDevice;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -143,6 +145,7 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
 
     // デバッグウィンドウの設定
     protected void setDebugWindow(TextView tv) {
+        //if (setKeyMapStep != 0) return;
         final TextView w = tv;
         final Handler _handler1 = new Handler();
         final int DELAY1 = 200;
@@ -154,7 +157,7 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                     //dWin.setText("proto20  " + main_width + " x " + main_height + " - " + dpdx_org + " -> " + dpdx + "\n"+debugText);
                     w.setText(debugText);
                 } else {
-                    w.setTextColor(Color.WHITE);
+                    //w.setTextColor(Color.WHITE);
                 }
                 _handler1.postDelayed(this, DELAY1);
             }
@@ -238,13 +241,15 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
     protected void onPause() {
         super.onPause();
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         if (nosave) {
             nosave = false;
         } else {
             ml.sc.halt();
             Sc61860params sc_params = ml.sc.saveParam();
 
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             Gson gson = new Gson();
             // objectをjson文字列へ変換
             String jsonInstanceString = gson.toJson(sc_params);
@@ -255,6 +260,18 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
             if (debug_info) Toast.makeText(this, String.format("Activity saved. id=%d", sc_params.id), Toast.LENGTH_SHORT).show();
         }
 
+        // Game pad のマッピング情報を保存する
+        prefs.edit().putInt("PREF_M0", mappedId[0]).apply();
+        prefs.edit().putInt("PREF_M1", mappedId[1]).apply();
+        prefs.edit().putInt("PREF_M2", mappedId[2]).apply();
+        prefs.edit().putInt("PREF_M3", mappedId[3]).apply();
+        prefs.edit().putInt("PREF_M4", mappedId[4]).apply();
+        prefs.edit().putInt("PREF_M5", mappedId[5]).apply();
+        prefs.edit().putInt("PREF_M6", mappedId[6]).apply();
+        prefs.edit().putInt("PREF_M7", mappedId[7]).apply();
+        for (int x : mappedId) {
+            Log.w("mapping", String.format("saved -> '%x'", x));
+        }
     }
 
     @Override
@@ -279,6 +296,19 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
             }
         }
         cacheClear = false;
+
+        // Game pad のマッピング情報を取得する
+        mappedId[0] = prefs.getInt("PREF_M0", 0);
+        mappedId[1] = prefs.getInt("PREF_M1", 0);
+        mappedId[2] = prefs.getInt("PREF_M2", 0);
+        mappedId[3] = prefs.getInt("PREF_M3", 0);
+        mappedId[4] = prefs.getInt("PREF_M4", 0);
+        mappedId[5] = prefs.getInt("PREF_M5", 0);
+        mappedId[6] = prefs.getInt("PREF_M6", 0);
+        mappedId[7] = prefs.getInt("PREF_M7", 0);
+        for (int x : mappedId) {
+            Log.w("mapping", String.format("loaded -> '%x'", x));
+        }
 
         // デバッグウィンドウの更新
         if (debug_info) {
@@ -385,13 +415,19 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
             case MotionEvent.ACTION_POINTER_DOWN:
                 //Log.w("onTouch", "POINTER_DOWN");
                 Log.w("onTouch", "DOWN");
-                kb.setBtnStatus(id, true);
-                mBtnStatusCnt[getBtnIdx(id)] = -1;
-                if (id == R.id.buttonBRK) {
-                    kon_cnt = 10;
-                }
-                if (vibrate_enable) {
-                    vib.vibrate(10);
+                if (setKeyMapStep == 0) {
+                    kb.setBtnStatus(id, true);
+                    mBtnStatusCnt[getBtnIdx(id)] = -1;
+                    if (id == R.id.buttonBRK) {
+                        kon_cnt = 10;
+                    }
+                    if (vibrate_enable) {
+                        vib.vibrate(10);
+                    }
+                } else {
+                    mappedId[setKeyMapStep - 1] = id;
+                    setKeyMapStep++;
+                    setKeyMap();
                 }
                 break;
             case MotionEvent.ACTION_POINTER_UP:
@@ -408,7 +444,9 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                 //Log.w("onTouch", "CANCEL");
                 Log.w("onTouch", "UP");
                 //kb.setBtnStatus(id, false);
-                mBtnStatusCnt[getBtnIdx(id)] = 3;
+                if (setKeyMapStep == 0) {
+                    mBtnStatusCnt[getBtnIdx(id)] = 3;
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 //Log.w("onTouch", "MOVE");
@@ -686,9 +724,11 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                 Intent intent1 = new android.content.Intent(this, MyPreferenceActivity.class);
                 startActivity(intent1);
                 return true;
-            //case R.id.optionsMenu_05:   // help
-            //    Toast.makeText(this, "未実装だよ！", Toast.LENGTH_LONG).show();
-            //    return true;
+            case R.id.optionsMenu_05:   // gamepad mapping
+                nosave = true;
+                setKeyMapStep = 1;
+                setKeyMap();
+                return true;
             case R.id.optionsMenu_06:   // exit
                 finish();
                 return true;
@@ -778,7 +818,7 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
 
         // トークンの切り出し
         String[] tmp;
-        tmp = str2.split("\\s+|(?<=[\\*\\/\\+\\-><=:;,])|(?=[\\*\\/\\+\\-><=:;,])", 0);
+        tmp = str2.split("\\s+|(?<=[\\*\\/\\+\\-><=:;,\\)\\(])|(?=[\\*\\/\\+\\-><=:;,\\)\\(])", 0);
 
         // 切り出したトークンでREMやダブルコートになっているところを戻す
         for (int i = 0, j = 0; i < tmp.length; i++) {
@@ -793,7 +833,7 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                 }
                 j++;
             }
-            //Log.w("split", tmp[i]);
+            Log.w("split", tmp[i]);
         }
 
         return tmp;
@@ -1016,5 +1056,119 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
     }
 
     protected String cmd_tbl[]; // 実体は継承クラスで作る
+
+    private int[] mappedId = new int[8];
+    //private int mappedId[] = {R.id.button8, R.id.button2, R.id.button4, R.id.button6,
+    //        R.id.buttonDEF, R.id.buttonDEF, R.id.buttonDEF, R.id.buttonDEF};
+
+    private int setKeyMapStep = 0;
+    private void setKeyMap() {
+        Log.w("setKeyMap", String.format("step=%d", setKeyMapStep));
+        TextView tv = findViewById(R.id.debugWindow);
+        switch (setKeyMapStep) {
+            case 1:
+                tv.setTextColor(Color.BLACK);
+                tv.setText("UP=?");
+                break;
+            case 2:
+                tv.setText("DOWN=?");
+                break;
+            case 3:
+                tv.setText("LEFT=?");
+                break;
+            case 4:
+                tv.setText("RIGHT=?");
+                break;
+            case 5:
+                tv.setText("BUTTON A=?");
+                break;
+            case 6:
+                tv.setText("BUTTON B=?");
+                break;
+            case 7:
+                tv.setText("BUTTON X=?");
+                break;
+            case 8:
+                tv.setText("BUTTON Y=?");
+                break;
+            default:
+                setKeyMapStep = 0;
+                tv.setTextColor(Color.WHITE);
+                break;
+        }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        int action = event.getAction();
+
+        Log.w("GamePad", "onKeyDown!!");
+
+        int inputDevice = event.getSource();
+        int id = 0;
+        if (true || (inputDevice & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK ||
+                (inputDevice & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD ||
+                (inputDevice & InputDevice.SOURCE_DPAD) == InputDevice.SOURCE_DPAD ||
+                (inputDevice & InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD) {
+
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_DPAD_UP:
+                    //id = R.id.button8;
+                    id = mappedId[0];
+                    break;
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                    //id = R.id.button2;
+                    id = mappedId[1];
+                    break;
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    //id = R.id.button4;
+                    id = mappedId[2];
+                    break;
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    //id = R.id.button6;
+                    id = mappedId[3];
+                    break;
+
+                case KeyEvent.KEYCODE_BUTTON_1:
+                case KeyEvent.KEYCODE_BUTTON_X:
+                    id = mappedId[6];
+                    break;
+
+                case KeyEvent.KEYCODE_BUTTON_2:
+                case KeyEvent.KEYCODE_BUTTON_Y:
+                    id = mappedId[7];
+                    break;
+
+                case KeyEvent.KEYCODE_BUTTON_3:
+                case KeyEvent.KEYCODE_BUTTON_B:
+                    id = mappedId[5];
+                    break;
+
+                case KeyEvent.KEYCODE_BUTTON_4:
+                case KeyEvent.KEYCODE_BUTTON_A:
+                    //id = R.id.buttonENTER;
+                    id = mappedId[4];
+                    break;
+
+                default:
+                    break;
+            }
+            if (id != 0) {
+                if (action == KeyEvent.ACTION_DOWN) {
+                    kb.setBtnStatus(id, true);
+                    mBtnStatusCnt[getBtnIdx(id)] = -1;
+                } else {
+                    mBtnStatusCnt[getBtnIdx(id)] = 3;
+                }
+            }
+            // キーコードをログ出力
+            String msg = "keyCode:" + keyCode;
+            Log.w("GamePad", msg);
+
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
 
 }

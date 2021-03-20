@@ -22,6 +22,11 @@
         />
 
     <item
+        android:id="@+id/optionsMenu_05"
+        android:title="@string/opt_menu_05"
+        />
+
+    <item
         android:id="@+id/optionsMenu_06"
         android:title="@string/opt_menu_06"
         />

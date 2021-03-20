@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_main"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,9 +12,9 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_weight="4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="4"
             android:orientation="horizontal">
 
             <!-- 表示部 -->
@@ -26,73 +26,72 @@
                     android:id="@+id/display"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/pc1350display"
-                    android:scaleType="fitXY"></ImageView>
+                    android:scaleType="fitXY"
+                    android:src="@drawable/pc1350display"></ImageView>
 
                 <SurfaceView
                     android:id="@+id/surfaceView"
                     android:layout_width="520dp"
                     android:layout_height="112dp"
-                    android:layout_gravity="center">
-                </SurfaceView>
+                    android:layout_gravity="center"></SurfaceView>
             </FrameLayout>
 
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="4"
             android:orientation="horizontal">
 
             <!-- メインキーボード部 -->
             <FrameLayout
-                android:layout_weight="4"
                 android:id="@+id/frameLayout1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_weight="4">
 
                 <ImageView
                     android:id="@+id/keyAreaImageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/pc1350mainkey"
-                    android:scaleType="fitStart"></ImageView>
+                    android:scaleType="fitStart"
+                    android:src="@drawable/pc1350mainkey"></ImageView>
 
 
                 <include
                     android:id="@+id/keyArea"
+                    layout="@layout/include_keys_1350"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="top|left"
-                    layout="@layout/include_keys_1350"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"></include>
+                    android:layout_gravity="top|left"></include>
 
             </FrameLayout>
 
             <!-- テンキー部 -->
             <FrameLayout
-                android:layout_weight="8"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_weight="8">
 
                 <ImageView
                     android:id="@+id/tenkey"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/pc1350tenkey"
-                    android:scaleType="fitStart"></ImageView>
+                    android:scaleType="fitStart"
+                    android:src="@drawable/pc1350tenkey"></ImageView>
 
                 <include
                     android:id="@+id/tenKeyArea"
-                    android:layout_gravity="top|left"
+                    layout="@layout/include_keys_1350_tenkey"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    layout="@layout/include_keys_1350_tenkey"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"></include>
+                    android:layout_gravity="top|left"></include>
 
 
             </FrameLayout>
@@ -103,14 +102,13 @@
 
     <TextView
         android:id="@+id/debugWindow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
         android:layout_weight="9"
         android:text=""
         android:textSize="12sp"
-        android:typeface="monospace"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom">
-    </TextView>
+        android:typeface="monospace"></TextView>
 
 
 </LinearLayout>

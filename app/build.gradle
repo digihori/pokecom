@@ -8,8 +8,8 @@ android {
         applicationId "tk.horiuchi.pokecom"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 24
-        versionName "1.05.03"
+        versionCode 25
+        versionName "1.05.04"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         archivesBaseName = "${applicationName}-${versionName}"
     }
