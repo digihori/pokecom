@@ -8,13 +8,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
+            android:layout_weight="5"
             android:orientation="horizontal">
 
             <!-- 表示部 -->
@@ -49,8 +48,7 @@
             <FrameLayout
                 android:id="@+id/frameLayout1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="4">
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/keyAreaImageView"
@@ -69,46 +67,20 @@
                     android:layout_alignParentLeft="true"
                     android:layout_gravity="top|left"></include>
 
-            </FrameLayout>
-
-            <!-- テンキー部 -->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="8">
-
-                <ImageView
-                    android:id="@+id/tenkey"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitStart"
-                    android:src="@drawable/pc1350tenkey"></ImageView>
-
-                <include
-                    android:id="@+id/tenKeyArea"
-                    layout="@layout/include_keys_1350_tenkey"
+                <TextView
+                    android:id="@+id/debugWindow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_gravity="top|left"></include>
-
-
+                    android:layout_gravity="bottom"
+                    android:text=""
+                    android:textSize="12sp"
+                    android:typeface="monospace"></TextView>
             </FrameLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/debugWindow"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:layout_weight="9"
-        android:text=""
-        android:textSize="12sp"
-        android:typeface="monospace"></TextView>
 
 
 </LinearLayout>
