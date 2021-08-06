@@ -192,7 +192,7 @@ public class SubActivityBase12xx extends SubActivityBase {
             while ((c = source[r++]) != 0x00) {
                 //Log.w("LOG", String.format("c=%02x", c));
                 cmd = "";
-                if (0x7d <= c && c <= 0xdf) {
+                if (0x7d <= c && c <= 0xdf || c == 0x19 || c == 0x1a) {
                     if (cmd_exist || non_cmd) {
                         dest[w++] = ' ';
                     }
