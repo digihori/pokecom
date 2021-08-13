@@ -1,11 +1,15 @@
 package tk.horiuchi.pokecom;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class SubActivity1470 extends SubActivityBase {
@@ -98,7 +102,8 @@ public class SubActivity1470 extends SubActivityBase {
                 "ERN", "ERL", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0",
                 "ASC", "VAL", "LEN", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0",
                 "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "OPEN$", "INKEY$", "MID$", "LEFT$", "RIGHT$", "\0", "\0", "\0",
-                "CHR$", "STR$", "HEX$", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\\PI", "\\SQR", "\0", "\0", "\0"
+                "CHR$", "STR$", "HEX$", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0"
+//                "CHR$", "STR$", "HEX$", "\0", "\0", "\\SP", "\\HT", "\\DI", "\\CL", "\\BX", "\\INS", "\\PI", "\\SQR", "\0", "\0", "\0"
         };
 
     }
@@ -127,6 +132,24 @@ public class SubActivity1470 extends SubActivityBase {
     //    super.onClick(v);
     //}
 
+    private String ecode[] = { "\\YEAR", "\\MON", "\\DAY", "\\YEN", "\\SP", "\\HT", "\\DI", "\\CL", "\\BX", "\\INS", "\\PI", "\\SQR"};
+
+    protected String replaceSpecialChar(String str) {
+        str = str.replace("\\\\", String.valueOf((char)0xf0));
+
+        for (int i = 0; i <= 11; i++) {
+            String regex = String.valueOf('\\')+ecode[i];
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(str);
+            if (m.find()) {
+                str = str.replaceAll(regex, String.valueOf((char)(0xf1 + i)));
+            }
+        }
+        str = str.replace(String.valueOf((char)0xf0), "\\");
+        str = str.replace("\\EX", "E");
+        return str;
+    }
+
     @Override
     protected int[] bas2code(int[] source) {
         int[] dest = new int[0x8000];
@@ -154,6 +177,9 @@ public class SubActivity1470 extends SubActivityBase {
             }
             //Log.w("LOG", String.format("%s", str));
 
+            // 先頭の空白を削除する
+            str = trimLeft(str);
+
             talken = split(str);
 
             // 一つ目のトークンは必ず行番号
@@ -167,7 +193,7 @@ public class SubActivity1470 extends SubActivityBase {
 
             // 次のトークンからはコマンド
             boolean flg_goto = false;
-            for (int i = 1; i < talken.length; i++) {
+            loop: for (int i = 1; i < talken.length; i++) {
                 if (i == 1 && talken[i].equals(":")) continue;  // 行番号の次がコロンの場合は読み捨て
                 int temp = cmdname2code(talken[i]);
                 if (temp != 0) {
@@ -194,6 +220,27 @@ public class SubActivity1470 extends SubActivityBase {
                             continue;
                         }
                     } else {
+                        replaceSpecialChar(talken[i]);
+                        /*
+                        for (int j = 0; j <= 11; j++) {
+                            if (talken[i].equals(ecode[j])) {
+                                dest[w++] = 0xf1 + j;
+                                ll++;
+                                continue loop;
+                            }
+                        }
+                         */
+                        if (talken[i].equals("\\EX")) {
+                            dest[w++] = 'E';
+                            ll++;
+                        } else {
+                            for (int j = 0; j < n; j++) {
+                                dest[w++] = (int) (talken[i].charAt(j));
+                                //Log.w("LOG", String.format("%s", talken[i].charAt(j)));
+                                ll++;
+                            }
+                        }
+/*
                         if (talken[i].equals("\\SQR")) {
                             dest[w++] = 0xfc;
                             ll++;
@@ -207,6 +254,7 @@ public class SubActivity1470 extends SubActivityBase {
                                 ll++;
                             }
                         }
+*/
                     }
                 }
             }
@@ -306,6 +354,20 @@ public class SubActivity1470 extends SubActivityBase {
                         dest[w++] = ' ';
                         cmd_exist = false;
                     }
+
+                    if (0xf1 <= c && c <= 0xfc) {
+                        Log.w("LOG", String.format("c=%x", c));
+                        tmp = ecode[c - 0xf1];
+                        for (int j = 0; j < tmp.length(); j++) {
+                            dest[w++] = tmp.charAt(j);
+                        }
+                    } else {
+                        dest[w++] = c;
+                        if (c == '\\') {
+                            dest[w++] = c;
+                        }
+                    }
+/*
                     if (c == 0xfc) {
                         //if (non_cmd) {
                         //    dest[w++] = ' ';
@@ -325,6 +387,7 @@ public class SubActivity1470 extends SubActivityBase {
                     } else {
                         dest[w++] = c;
                     }
+  */
                     non_cmd = (c != ' ') ? true : false;
                 }
                 if (r >= source.length) break;

@@ -96,7 +96,7 @@ public class SubActivity1402 extends SubActivityBase {
                 "RUN", "NEW", "CONT", "PASS", "LIST", "LLIST", "CSAVE", "CLOAD", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0",
                 "RANDOM", "DEGREE", "RADIAN", "GRAD", "BEEP", "WAIT", "GOTO", "TRON", "TROFF", "CLEAR", "USING", "DIM", "CALL", "POKE", "\0", "\0",
                 "TO", "STEP", "THEN", "ON", "IF", "FOR", "LET", "REM", "END", "NEXT", "STOP", "READ", "DATA", "PAUSE", "PRINT", "INPUT",
-                "GOSUB", "AREAD", "LPRINT", "RETURN", "RESTORE", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0",
+                "GOSUB", "AREAD", "LPRINT", "RETURN", "RESTORE", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\\EX",
                 "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\\PI", "\\SQR", "\\INS", "\\BX", "\0"
         };
 

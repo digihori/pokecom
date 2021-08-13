@@ -3,6 +3,9 @@ package tk.horiuchi.pokecom;
 
 import android.util.Log;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SubActivityBase12xx extends SubActivityBase {
 
     /*
@@ -48,6 +51,26 @@ public class SubActivityBase12xx extends SubActivityBase {
         return super.cmdname2code(cmdname);
     }
     */
+    @Override
+    protected String replaceSpecialChar(String str) {
+        // エスケープ文字'\'そのものにしたいところを一旦0x6fに変換しておく
+        str = str.replace("\\\\", String.valueOf((char)0x6f));
+
+        int cmd[] = { 0x19/*\PI*/, 0x1a/*\SQR*/, 0x4b/*\EX*/, 0x4c/*\BX*/};
+        for (int i = 0; i < 4; i++) {
+            String s = cmd_tbl[cmd[i]];
+            if (s.charAt(0) != '\\') continue;
+
+            String regex = String.valueOf('\\')+s;
+            Log.w("replaceSpecialChar", String.format("code=%02x cmd='%s' regex='%s'", cmd[i], s, regex));
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(str);
+            if (m.find()) {
+                str = str.replaceAll(regex, String.valueOf((char)(cmd[i] | 0xf0)));
+            }
+        }
+        return str;
+    }
 
     @Override
     protected int[] bas2code(int[] source) {
@@ -82,6 +105,8 @@ public class SubActivityBase12xx extends SubActivityBase {
                 if (r >= len) break;
             }
             //Log.w("LOG", String.format("%s", str));
+            // 先頭の空白を削除する
+            str = trimLeft(str);
 
             token = split(str);
 
@@ -120,11 +145,26 @@ public class SubActivityBase12xx extends SubActivityBase {
                     char[] ch = new char[1];
                     for (int j = 0; j < n; j++) {
                         ch[0] = token[i].charAt(j);
-                        String tempStr = String.valueOf(ch);
-                        dest[w++] = cmdname2code(tempStr);
-                        //ll++;
-                        // もうちょっといいやり方ないのかな。。
-                        //Log.w("LOG", String.format("%02x='%c'", dest[w-1], dest[w-1]));
+                        if (ch[0] >= 0xf0 || ch[0] == 0x6f) {
+                            // 特殊記号は一旦別のコードにしているのでここで戻す
+                            switch (ch[0]) {
+                                case 0x6f: dest[w++] = 0x17; break; // \
+                                case 0xf9: dest[w++] = 0x19; break; // \PI
+                                case 0xfa: dest[w++] = 0x1a; break; // \SQR
+                                case 0xfb: dest[w++] = 0x4b; break; // \EXP
+                                case 0xfc: dest[w++] = 0x4c; break; // \BX
+                                default:
+                                    break;
+                            }
+                            //Log.w("LOG", String.format("%02x", dest[w-1]));
+                        } else {
+                            String tempStr = String.valueOf(ch);
+                            temp = cmdname2code(tempStr);
+                            if (temp != 0) dest[w++] = temp;
+                            //ll++;
+                            // もうちょっといいやり方ないのかな。。
+                            //Log.w("LOG", String.format("%02x='%c'", dest[w-1], dest[w-1]));
+                        }
                     }
                 }
             }
@@ -192,8 +232,8 @@ public class SubActivityBase12xx extends SubActivityBase {
             while ((c = source[r++]) != 0x00) {
                 //Log.w("LOG", String.format("c=%02x", c));
                 cmd = "";
-                if (0x7d <= c && c <= 0xdf || c == 0x19 || c == 0x1a) {
-                    if (cmd_exist || non_cmd) {
+                if (0x7d <= c && c <= 0xdf || c == 0x19 || c == 0x1a || c == 0x4b || c == 0x4c) {
+                    if (0x7d <= c && c <= 0xdf && non_cmd || cmd_exist) {
                         dest[w++] = ' ';
                     }
                     cmd_exist = false;
@@ -204,15 +244,20 @@ public class SubActivityBase12xx extends SubActivityBase {
                     for (int j = 0; j < cmd.length(); j++) {
                         dest[w++] = cmd.charAt(j);
                     }
-                    cmd_exist = true;
+                    if (0x7d <= c && c <= 0xdf) {
+                        cmd_exist = true;
+                    }
                 } else {
                     if (cmd_exist) {
                         dest[w++] = ' ';
                         cmd_exist = false;
                     }
                     if (0x11 <= c && c <= 0x1f || 0x30 <= c && c<= 0x39 ||
-                            0x40 <= c && c <= 0x4a || 0x50 <= c && c <= 0x6a) {
+                            0x40 <= c && c <= 0x4f || 0x50 <= c && c <= 0x6a) {
                         dest[w++] = cmd_tbl[c].charAt(0);
+                        if (c == 0x17) {    // '\'は'\\'にする
+                            dest[w++] = cmd_tbl[c].charAt(0);
+                        }
                     }
 
                     non_cmd = (c != ' ') ? true : false;

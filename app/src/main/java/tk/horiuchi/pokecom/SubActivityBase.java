@@ -738,7 +738,12 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
     }
 
     protected String replaceSpecialChar(String str) {
-        for (int i = 0xf0; i < 0xff; i++) {
+        // エスケープ文字'\'そのものにしたいところを一旦0x7fに変換しておく
+        //Log.w("replaceSpecialChar", String.format("str='%s'", str));
+        str = str.replace("\\\\", String.valueOf((char)0x7f));
+        //Log.w("replaceSpecialChar", String.format("str='%s' regex0='%s'", str, regex0));
+
+        for (int i = 0xef; i < 0xff; i++) {
             String s = cmd_tbl[i];
             if (s.charAt(0) != '\\') continue;
 
@@ -833,13 +838,14 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                 }
                 j++;
             }
-            Log.w("split", tmp[i]);
+            //Log.w("split", String.format("\"%s\" %x", tmp[i], (int)tmp[i].charAt(0)));
+            Log.w("split", String.format("\"%s\"", tmp[i]));
         }
 
         return tmp;
     }
 
-    private static String trimLeft(String s) {
+    protected static String trimLeft(String s) {
         int startPos = 0;
         for (int i = 0; i < s.length(); i++) {
             if (s.charAt(i) != ' ') {
@@ -935,7 +941,14 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                 } else {
                     int n = token[i].length();
                     for (int j = 0; j < n; j++) {
-                        dest[w++] = (int) (token[i].charAt(j));
+                        int x = (int) (token[i].charAt(j));
+                        if (x == 0xef) {    // '\EX'は'E'に変換する
+                            dest[w++] = 'E';
+                        } else if (x == 0x7f) { // '\\'を0x7fに待避していたものを'\'に戻す
+                            dest[w++] = '\\';
+                        } else {
+                            dest[w++] = (int) (token[i].charAt(j));
+                        }
                         //Log.w("LOG", String.format("%s", token[i].charAt(j)));
                         ll++;
                     }
@@ -1003,7 +1016,7 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                 //Log.w("LOG", String.format("c=%02x", c));
                 cmd = "";
                 if (0x80 <= c && c <= 0xff) {
-                    if (c < 0xf0 && (cmd_exist || non_cmd)) {
+                    if (c < 0xf0 && non_cmd || cmd_exist) {
                         dest[w++] = ' ';
                     }
                     cmd_exist = false;
@@ -1023,6 +1036,9 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                         cmd_exist = false;
                     }
                     dest[w++] = c;
+                    if (c == '\\') {
+                        dest[w++] = c;
+                    }
 
                     non_cmd = (c != ' ') ? true : false;
                 }
