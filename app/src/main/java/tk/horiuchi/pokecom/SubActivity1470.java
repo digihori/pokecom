@@ -106,6 +106,9 @@ public class SubActivity1470 extends SubActivityBase {
 //                "CHR$", "STR$", "HEX$", "\0", "\0", "\\SP", "\\HT", "\\DI", "\\CL", "\\BX", "\\INS", "\\PI", "\\SQR", "\0", "\0", "\0"
         };
 
+        kana = true;
+        kana1470 = true;
+
     }
 
     @Override
@@ -147,7 +150,8 @@ public class SubActivity1470 extends SubActivityBase {
         }
         str = str.replace(String.valueOf((char)0xf0), "\\");
         str = str.replace("\\EX", "E");
-        return str;
+        //return str;
+        return (kana ? replaceKana(str) : str);
     }
 
     @Override
@@ -321,6 +325,22 @@ public class SubActivity1470 extends SubActivityBase {
             while ((c = source[r++]) != 0x0d) {
                 //Log.w("LOG", String.format("c=%02x", c));
                 cmd = "";
+                if (kana1470 && 0xa1 <= c && c <= 0xdf) {
+                    // カナのコードをUTF-8に変換する
+                        if (cmd_exist) {
+                            dest[w++] = ' ';
+                            cmd_exist = false;
+                        }
+                        if (c <= 0xbf) {
+                            dest[w++] = 0xef;
+                            dest[w++] = 0xbd;
+                            dest[w++] = c;
+                        } else {
+                            dest[w++] = 0xef;
+                            dest[w++] = 0xbe;
+                            dest[w++] = c - 0x40;
+                        }
+                } else
                 if (c == 0xfe) {
                     if (r >= source.length) break;
                     c = source[r++];

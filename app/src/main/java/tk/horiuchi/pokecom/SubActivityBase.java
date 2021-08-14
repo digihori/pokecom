@@ -78,6 +78,9 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
     protected int[] mBtnStatusCnt;
     //public static Boolean[] mBtnStatus;
 
+    protected boolean kana = false;
+    protected boolean kana1470 = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -742,8 +745,10 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
         //Log.w("replaceSpecialChar", String.format("str='%s'", str));
         str = str.replace("\\\\", String.valueOf((char)0x7f));
         //Log.w("replaceSpecialChar", String.format("str='%s' regex0='%s'", str, regex0));
+        // PC-12系の'\EX'は'E'に変換しておく
+        str = str.replace("\\EX", "E");
 
-        for (int i = 0xef; i < 0xff; i++) {
+        for (int i = 0xf1; i < 0xff; i++) {
             String s = cmd_tbl[i];
             if (s.charAt(0) != '\\') continue;
 
@@ -755,7 +760,51 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                 str = str.replaceAll(regex, String.valueOf((char)i));
             }
         }
-        return str;
+        //return str;
+        return replaceKana(str);
+    }
+
+    protected String replaceKana(String str) {
+        String ret = "", temp = "";
+        int n = str.length();
+        for (int i = 0; i < n; i++) {
+            int c1 = str.charAt(i);
+            if (n - i >= 3 && c1 == 0xef) {
+                int c2 = str.charAt(i + 1);
+                int c3 = str.charAt(i + 2);
+                if (c2 == 0xbd) {
+                    if (kana1470) {
+                        temp = String.valueOf((char) c3);
+                    } else {
+                        temp = String.valueOf((char) 0xfe) + String.valueOf((char) c3);
+                    }
+                } else if (c2 == 0xbe) {
+                    if (kana1470) {
+                        temp = String.valueOf((char)(c3 + 0x40));
+                    } else {
+                        temp = String.valueOf((char) 0xfe) + String.valueOf((char) (c3 + 0x40));
+                    }
+                }
+                i += 2;
+                if (kana) ret += temp;
+            } else {
+                ret += String.valueOf((char)c1);
+            }
+        }
+
+        /*
+        String s1="", s2="";
+        for (int i = 0; i < str.length(); i++) {
+            s1 += String.format("%02x", (int)str.charAt(i));
+        }
+        for (int i = 0; i < ret.length(); i++) {
+            s2 += String.format("%02x", (int)ret.charAt(i));
+        }
+        Log.w("KANA", String.format("%s -> %s", s1, s2));
+
+         */
+
+        return ret;
     }
 
     protected String[] split(String str) {
@@ -941,10 +990,8 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                 } else {
                     int n = token[i].length();
                     for (int j = 0; j < n; j++) {
-                        int x = (int) (token[i].charAt(j));
-                        if (x == 0xef) {    // '\EX'は'E'に変換する
-                            dest[w++] = 'E';
-                        } else if (x == 0x7f) { // '\\'を0x7fに待避していたものを'\'に戻す
+                        int x = (int)(token[i].charAt(j));
+                        if (x == 0x7f) { // '\\'を0x7fに待避していたものを'\'に戻す
                             dest[w++] = '\\';
                         } else {
                             dest[w++] = (int) (token[i].charAt(j));
@@ -1015,6 +1062,28 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
             while ((c = source[r++]) != 0x0d) {
                 //Log.w("LOG", String.format("c=%02x", c));
                 cmd = "";
+                if (kana && c == 0xfe) {
+                    // カナのコードをUTF-8に変換する
+                    if (source[r] != 0x0d) {
+                        if (cmd_exist) {
+                            dest[w++] = ' ';
+                            cmd_exist = false;
+                        }
+                        int cc = source[r++];
+                        if (0xa1 <= cc && cc <= 0xbf) {
+                            dest[w++] = 0xef;
+                            dest[w++] = 0xbd;
+                            dest[w++] = cc;
+                        } else if (0xc0 <= cc && cc <= 0xdf) {
+                            dest[w++] = 0xef;
+                            dest[w++] = 0xbe;
+                            dest[w++] = cc - 0x40;
+                        } else {
+                            // 不正なデータならば捨てる
+                        }
+                    }
+
+                } else
                 if (0x80 <= c && c <= 0xff) {
                     if (c < 0xf0 && non_cmd || cmd_exist) {
                         dest[w++] = ' ';

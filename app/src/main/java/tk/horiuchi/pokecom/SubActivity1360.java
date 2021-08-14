@@ -95,9 +95,11 @@ public class SubActivity1360 extends SubActivityBase {
                 "RUN", "NEW", "CONT", "PASS", "LIST", "LLIST", "CSAVE", "CLOAD", "MARGE", "\0", "\0", "OPEN", "CLOSE", "SAVE", "LOAD", "CONSOLE",
                 "RANDOM", "DEGREE", "RADIAN", "GRAD", "BEEP", "WAIT", "GOTO", "TRON", "TROFF", "CLEAR", "USING", "DIM", "CALL", "POKE", "CLS", "CURSOR",
                 "TO", "STEP", "THEN", "ON", "IF", "FOR", "LET", "REM", "END", "NEXT", "STOP", "READ", "DATA", "PAUSE", "PRINT", "INPUT",
-                "GOSUB", "AREAD", "LPRINT", "RETURN", "RESTORE", "CHAIN", "GCURSOR", "GPRINT", "LINE", "POINT", "PSET", "PRESET", "BASIC", "TEXT", "OPEN$", "\\EX",
+                "GOSUB", "AREAD", "LPRINT", "RETURN", "RESTORE", "CHAIN", "GCURSOR", "GPRINT", "LINE", "POINT", "PSET", "PRESET", "BASIC", "TEXT", "OPEN$", "\0",
                 "\0", "\\YEAR", "\\MON", "\\DAY", "\\YEN", "\\SP", "\\HT", "\\DI", "\\CL", "\\BX", "\\INS", "\\PI", "\\SQR", "\0", "\0", "\0"
         };
+
+        kana  = true;
 
     }
 
