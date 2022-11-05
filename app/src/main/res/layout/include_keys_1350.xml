@@ -7,94 +7,94 @@
     android:rowCount="4"
     android:id="@+id/keyFrame">
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="MO"
         style="@style/charButton"
         android:layout_column="0"
         android:layout_row="0"
         android:id="@+id/buttonMODE"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="BRK"
         style="@style/charButton"
         android:layout_column="1"
         android:layout_row="0"
         android:id="@+id/buttonBRK"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="↓"
         style="@style/charButton"
         android:layout_column="2"
         android:layout_row="0"
         android:id="@+id/buttonDA"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="↑"
         style="@style/charButton"
         android:layout_column="3"
         android:layout_row="0"
         android:id="@+id/buttonUA"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="LA"
         style="@style/charButton"
         android:layout_column="4"
         android:layout_row="0"
         android:id="@+id/buttonLA"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="RA"
         style="@style/charButton"
         android:layout_column="5"
         android:layout_row="0"
         android:id="@+id/buttonRA"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="DEL"
         style="@style/charButton"
         android:layout_column="7"
         android:layout_row="0"
         android:id="@+id/buttonDEL"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="INS"
         style="@style/charButton"
         android:layout_column="8"
         android:layout_row="0"
         android:id="@+id/buttonINS"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="SH"
         style="@style/charButton"
         android:layout_column="9"
         android:layout_row="0"
         android:id="@+id/buttonSHIFT2"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="CE"
         style="@style/charButton"
         android:layout_column="10"
         android:layout_row="0"
         android:id="@+id/buttonCE"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="7"
         style="@style/charButton"
         android:layout_column="11"
         android:layout_row="0"
         android:id="@+id/button7"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="8"
         style="@style/charButton"
         android:layout_column="12"
         android:layout_row="0"
         android:id="@+id/button8"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="9"
         style="@style/charButton"
         android:layout_column="13"
         android:layout_row="0"
         android:id="@+id/button9"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="("
         style="@style/charButton"
         android:layout_column="14"
         android:layout_row="0"
         android:id="@+id/buttonK1"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text=")"
         style="@style/charButton"
         android:layout_column="15"
@@ -103,98 +103,98 @@
 
     <!--          -->
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="SH"
         style="@style/charButton"
         android:layout_column="0"
         android:layout_row="1"
         android:id="@+id/buttonSHIFT"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonQ"
         style="@style/charButton"
         android:layout_column="1"
         android:layout_row="1"
         android:text="Q" />
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonW"
         style="@style/charButton"
         android:layout_column="2"
         android:layout_row="1"
         android:text="W" />
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="E"
         style="@style/charButton"
         android:layout_column="3"
         android:layout_row="1"
         android:id="@+id/buttonE"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="R"
         style="@style/charButton"
         android:layout_column="4"
         android:layout_row="1"
         android:id="@+id/buttonR"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="T"
         style="@style/charButton"
         android:layout_column="5"
         android:layout_row="1"
         android:id="@+id/buttonT"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="Y"
         style="@style/charButton"
         android:layout_column="6"
         android:layout_row="1"
         android:id="@+id/buttonY"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="U"
         style="@style/charButton"
         android:layout_column="7"
         android:layout_row="1"
         android:id="@+id/buttonU"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="I"
         style="@style/charButton"
         android:layout_column="8"
         android:layout_row="1"
         android:id="@+id/buttonI"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="O"
         style="@style/charButton"
         android:layout_column="9"
         android:layout_row="1"
         android:id="@+id/buttonO"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="P"
         style="@style/charButton"
         android:layout_column="10"
         android:layout_row="1"
         android:id="@+id/buttonP"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="4"
         style="@style/charButton"
         android:layout_column="11"
         android:layout_row="1"
         android:id="@+id/button4"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="5"
         style="@style/charButton"
         android:layout_column="12"
         android:layout_row="1"
         android:id="@+id/button5"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="6"
         style="@style/charButton"
         android:layout_column="13"
         android:layout_row="1"
         android:id="@+id/button6"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="/"
         style="@style/charButton"
         android:layout_column="14"
         android:layout_row="1"
         android:id="@+id/buttonDIV"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text=":"
         style="@style/charButton"
         android:layout_column="15"
@@ -203,98 +203,98 @@
 
     <!--          -->
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="DE"
         style="@style/charButton"
         android:layout_column="0"
         android:layout_row="2"
         android:id="@+id/buttonDEF"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="A"
         style="@style/charButton"
         android:layout_column="1"
         android:layout_row="2"
         android:id="@+id/buttonA"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="S"
         style="@style/charButton"
         android:layout_column="2"
         android:layout_row="2"
         android:id="@+id/buttonS"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="D"
         style="@style/charButton"
         android:layout_column="3"
         android:layout_row="2"
         android:id="@+id/buttonD"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="F"
         style="@style/charButton"
         android:layout_column="4"
         android:layout_row="2"
         android:id="@+id/buttonF"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="G"
         style="@style/charButton"
         android:layout_column="5"
         android:layout_row="2"
         android:id="@+id/buttonG"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="H"
         style="@style/charButton"
         android:layout_column="6"
         android:layout_row="2"
         android:id="@+id/buttonH"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="J"
         style="@style/charButton"
         android:layout_column="7"
         android:layout_row="2"
         android:id="@+id/buttonJ"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="K"
         style="@style/charButton"
         android:layout_column="8"
         android:layout_row="2"
         android:id="@+id/buttonK"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="L"
         style="@style/charButton"
         android:layout_column="9"
         android:layout_row="2"
         android:id="@+id/buttonL"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="="
         style="@style/charButton"
         android:layout_column="10"
         android:layout_row="2"
         android:id="@+id/buttonEQ"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="1"
         style="@style/charButton"
         android:layout_column="11"
         android:layout_row="2"
         android:id="@+id/button1"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="2"
         style="@style/charButton"
         android:layout_column="12"
         android:layout_row="2"
         android:id="@+id/button2"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="3"
         style="@style/charButton"
         android:layout_column="13"
         android:layout_row="2"
         android:id="@+id/button3"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="*"
         style="@style/charButton"
         android:layout_column="14"
         android:layout_row="2"
         android:id="@+id/buttonMLT"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text=";"
         style="@style/charButton"
         android:layout_column="15"
@@ -303,61 +303,61 @@
 
     <!--          -->
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="KA"
         style="@style/charButton"
         android:layout_column="0"
         android:layout_row="3"
         android:id="@+id/buttonKANA"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="Z"
         style="@style/charButton"
         android:layout_column="1"
         android:layout_row="3"
         android:id="@+id/buttonZ"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="X"
         style="@style/charButton"
         android:layout_column="2"
         android:layout_row="3"
         android:id="@+id/buttonX"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="C"
         style="@style/charButton"
         android:layout_column="3"
         android:layout_row="3"
         android:id="@+id/buttonC"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="V"
         style="@style/charButton"
         android:layout_column="4"
         android:layout_row="3"
         android:id="@+id/buttonV"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="B"
         style="@style/charButton"
         android:layout_column="5"
         android:layout_row="3"
         android:id="@+id/buttonB"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="N"
         style="@style/charButton"
         android:layout_column="6"
         android:layout_row="3"
         android:id="@+id/buttonN"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="M"
         style="@style/charButton"
         android:layout_column="7"
         android:layout_row="3"
         android:id="@+id/buttonM"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text=" "
         style="@style/charButton"
         android:layout_column="8"
         android:layout_row="3"
         android:id="@+id/buttonSPC"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="ENT"
         style="@style/charButton"
         android:layout_column="9"
@@ -365,31 +365,31 @@
         android:layout_columnSpan="2"
         android:id="@+id/buttonENTER"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="0"
         style="@style/charButton"
         android:layout_column="11"
         android:layout_row="3"
         android:id="@+id/button0"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="."
         style="@style/charButton"
         android:layout_column="12"
         android:layout_row="3"
         android:id="@+id/buttonDOT"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="+"
         style="@style/charButton"
         android:layout_column="13"
         android:layout_row="3"
         android:id="@+id/buttonPLS"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text="-"
         style="@style/charButton"
         android:layout_column="14"
         android:layout_row="3"
         android:id="@+id/buttonMINUS"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:text=","
         style="@style/charButton"
         android:layout_column="15"

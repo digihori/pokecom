@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/layout-hdpi/activity_main_1245.xml" value="0.4623015873015873" />
+        <entry key="app/src/main/res/layout-hdpi/activity_main_1401.xml" value="0.4623015873015873" />
+        <entry key="app/src/main/res/layout-sw600dp/activity_main_1245.xml" value="0.3733974358974359" />
+        <entry key="app/src/main/res/layout-sw720dp/activity_main_1245.xml" value="0.15915300546448088" />
+        <entry key="app/src/main/res/layout-xxhdpi/activity_main_1245.xml" value="0.21105072463768115" />
+        <entry key="app/src/main/res/layout-xxxhdpi/activity_main_1245.xml" value="0.15915300546448088" />
+        <entry key="app/src/main/res/layout/include_keys_1245.xml" value="0.21105072463768115" />
+      </map>
+    </option>
+  </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
     <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
