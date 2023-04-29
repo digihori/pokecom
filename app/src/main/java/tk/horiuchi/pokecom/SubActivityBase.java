@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -400,6 +401,27 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
     }
     */
 
+    private void keyDown(int id) {
+        if (setKeyMapStep == 0) {
+            kb.setBtnStatus(id, true);
+            mBtnStatusCnt[getBtnIdx(id)] = -1;
+            if (id == R.id.buttonBRK) {
+                kon_cnt = 10;
+            }
+            if (vibrate_enable) {
+                vib.vibrate(10);
+            }
+        } else {
+            mappedId[setKeyMapStep - 1] = id;
+            setKeyMapStep++;
+            setKeyMap();
+        }
+    }
+    private void keyUp(int id) {
+        if (setKeyMapStep == 0) {
+            mBtnStatusCnt[getBtnIdx(id)] = 3;
+        }
+    }
     public boolean onTouch(View v, MotionEvent event) {
         int id = v.getId();
 
@@ -418,6 +440,8 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
             case MotionEvent.ACTION_POINTER_DOWN:
                 //Log.w("onTouch", "POINTER_DOWN");
                 Log.w("onTouch", "DOWN");
+                keyDown(id);
+                /*
                 if (setKeyMapStep == 0) {
                     kb.setBtnStatus(id, true);
                     mBtnStatusCnt[getBtnIdx(id)] = -1;
@@ -432,6 +456,7 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                     setKeyMapStep++;
                     setKeyMap();
                 }
+                 */
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 //Log.w("onTouch", "POINTER_UP");
@@ -447,9 +472,10 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                 //Log.w("onTouch", "CANCEL");
                 Log.w("onTouch", "UP");
                 //kb.setBtnStatus(id, false);
-                if (setKeyMapStep == 0) {
-                    mBtnStatusCnt[getBtnIdx(id)] = 3;
-                }
+                keyUp(id);
+                //if (setKeyMapStep == 0) {
+                //    mBtnStatusCnt[getBtnIdx(id)] = 3;
+                //}
                 break;
             case MotionEvent.ACTION_MOVE:
                 //Log.w("onTouch", "MOVE");
@@ -1188,15 +1214,53 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
         int keyCode = event.getKeyCode();
         int action = event.getAction();
 
-        Log.w("GamePad", "onKeyDown!!");
+        Log.w("dispatchKeyEvent", "onKeyDown!!");
 
         int inputDevice = event.getSource();
+        Log.w("dispatchKeyEvent", String.format("inputDevice=%x", inputDevice));
         int id = 0;
-        if (true || (inputDevice & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK ||
-                (inputDevice & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD ||
-                (inputDevice & InputDevice.SOURCE_DPAD) == InputDevice.SOURCE_DPAD ||
-                (inputDevice & InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD) {
 
+        if ((inputDevice & InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD) {
+            // ゲームコントローラのキーから設定したボタンidを決める
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_BUTTON_1:
+                case KeyEvent.KEYCODE_BUTTON_X:
+                    id = mappedId[6];
+                    break;
+
+                case KeyEvent.KEYCODE_BUTTON_2:
+                case KeyEvent.KEYCODE_BUTTON_Y:
+                    id = mappedId[7];
+                    break;
+
+                case KeyEvent.KEYCODE_BUTTON_3:
+                case KeyEvent.KEYCODE_BUTTON_B:
+                    id = mappedId[5];
+                    break;
+
+                case KeyEvent.KEYCODE_BUTTON_4:
+                case KeyEvent.KEYCODE_BUTTON_A:
+                    //id = R.id.buttonENTER;
+                    id = mappedId[4];
+                    break;
+
+                default:
+                    // 外付けキーボードのキーからボタンidを決める
+                    for (int i = 0; i < keyTbl.length; i++) {
+                        if (keyCode == keyTbl[i].keycode) {
+                            id = keyTbl[i].btnid;
+                            break;
+                        }
+                    }
+                    break;
+            }
+
+        }
+        if ((inputDevice & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK ||
+                (inputDevice & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD ||
+                (inputDevice & InputDevice.SOURCE_DPAD) == InputDevice.SOURCE_DPAD) {
+
+            // ゲームコントローラのキーから設定したボタンidを決める
             switch (keyCode) {
                 case KeyEvent.KEYCODE_DPAD_UP:
                     //id = R.id.button8;
@@ -1239,21 +1303,102 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                 default:
                     break;
             }
-            if (id != 0) {
-                if (action == KeyEvent.ACTION_DOWN) {
-                    kb.setBtnStatus(id, true);
-                    mBtnStatusCnt[getBtnIdx(id)] = -1;
-                } else {
-                    mBtnStatusCnt[getBtnIdx(id)] = 3;
-                }
-            }
-            // キーコードをログ出力
-            String msg = "keyCode:" + keyCode;
-            Log.w("GamePad", msg);
-
         }
-        return super.dispatchKeyEvent(event);
+
+        if (id != 0) {
+            if (action == KeyEvent.ACTION_DOWN) {
+                kb.setBtnStatus(id, true);
+                mBtnStatusCnt[getBtnIdx(id)] = -1;
+            } else {
+                mBtnStatusCnt[getBtnIdx(id)] = 3;
+            }
+        }
+        // キーコードをログ出力
+        String msg = "keyCode:" + keyCode;
+        Log.w("GamePad", msg);
+
+        //return super.dispatchKeyEvent(event);
+        return true;
     }
 
+
+
+    protected class Keytbl {
+        int keycode;
+        int btnid;
+
+        Keytbl(int k, int i) {
+            keycode = k;
+            btnid = i;
+        }
+    }
+
+    protected Keytbl keyTbl[] = {
+            new Keytbl(KeyEvent.KEYCODE_A, R.id.buttonA),
+            new Keytbl(KeyEvent.KEYCODE_B, R.id.buttonB),
+            new Keytbl(KeyEvent.KEYCODE_C, R.id.buttonC),
+            new Keytbl(KeyEvent.KEYCODE_D, R.id.buttonD),
+            new Keytbl(KeyEvent.KEYCODE_E, R.id.buttonE),
+            new Keytbl(KeyEvent.KEYCODE_F, R.id.buttonF),
+            new Keytbl(KeyEvent.KEYCODE_G, R.id.buttonG),
+            new Keytbl(KeyEvent.KEYCODE_H, R.id.buttonH),
+            new Keytbl(KeyEvent.KEYCODE_I, R.id.buttonI),
+            new Keytbl(KeyEvent.KEYCODE_J, R.id.buttonJ),
+            new Keytbl(KeyEvent.KEYCODE_K, R.id.buttonK),
+            new Keytbl(KeyEvent.KEYCODE_L, R.id.buttonL),
+            new Keytbl(KeyEvent.KEYCODE_M, R.id.buttonM),
+            new Keytbl(KeyEvent.KEYCODE_N, R.id.buttonN),
+            new Keytbl(KeyEvent.KEYCODE_O, R.id.buttonO),
+            new Keytbl(KeyEvent.KEYCODE_P, R.id.buttonP),
+            new Keytbl(KeyEvent.KEYCODE_Q, R.id.buttonQ),
+            new Keytbl(KeyEvent.KEYCODE_R, R.id.buttonR),
+            new Keytbl(KeyEvent.KEYCODE_S, R.id.buttonS),
+            new Keytbl(KeyEvent.KEYCODE_T, R.id.buttonT),
+            new Keytbl(KeyEvent.KEYCODE_U, R.id.buttonU),
+            new Keytbl(KeyEvent.KEYCODE_V, R.id.buttonV),
+            new Keytbl(KeyEvent.KEYCODE_W, R.id.buttonW),
+            new Keytbl(KeyEvent.KEYCODE_X, R.id.buttonX),
+            new Keytbl(KeyEvent.KEYCODE_Y, R.id.buttonY),
+            new Keytbl(KeyEvent.KEYCODE_Z, R.id.buttonZ),
+            new Keytbl(KeyEvent.KEYCODE_0, R.id.button0),
+            new Keytbl(KeyEvent.KEYCODE_1, R.id.button1),
+            new Keytbl(KeyEvent.KEYCODE_2, R.id.button2),
+            new Keytbl(KeyEvent.KEYCODE_3, R.id.button3),
+            new Keytbl(KeyEvent.KEYCODE_4, R.id.button4),
+            new Keytbl(KeyEvent.KEYCODE_5, R.id.button5),
+            new Keytbl(KeyEvent.KEYCODE_6, R.id.button6),
+            new Keytbl(KeyEvent.KEYCODE_7, R.id.button7),
+            new Keytbl(KeyEvent.KEYCODE_8, R.id.button8),
+            new Keytbl(KeyEvent.KEYCODE_9, R.id.button9),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_0, R.id.button0),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_1, R.id.button1),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_2, R.id.button2),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_3, R.id.button3),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_4, R.id.button4),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_5, R.id.button5),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_6, R.id.button6),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_7, R.id.button7),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_8, R.id.button8),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_9, R.id.button9),
+            new Keytbl(KeyEvent.KEYCODE_CTRL_LEFT, R.id.buttonDEF),
+            new Keytbl(KeyEvent.KEYCODE_ALT_LEFT, R.id.buttonBASIC),
+            new Keytbl(KeyEvent.KEYCODE_ALT_RIGHT, R.id.buttonCAL),
+            new Keytbl(KeyEvent.KEYCODE_SHIFT_LEFT, R.id.buttonSHIFT),
+            new Keytbl(KeyEvent.KEYCODE_SHIFT_RIGHT, R.id.buttonSHIFT),
+            new Keytbl(KeyEvent.KEYCODE_DPAD_DOWN, R.id.buttonDA),
+            new Keytbl(KeyEvent.KEYCODE_DPAD_UP, R.id.buttonUA),
+            new Keytbl(KeyEvent.KEYCODE_DPAD_LEFT, R.id.buttonLA),
+            new Keytbl(KeyEvent.KEYCODE_DPAD_RIGHT, R.id.buttonRA),
+            new Keytbl(KeyEvent.KEYCODE_SPACE, R.id.buttonSPC),
+            new Keytbl(KeyEvent.KEYCODE_ENTER, R.id.buttonENTER),
+            new Keytbl(KeyEvent.KEYCODE_EQUALS, R.id.buttonEQ),
+            new Keytbl(KeyEvent.KEYCODE_DEL, R.id.buttonDEL),
+            new Keytbl(KeyEvent.KEYCODE_ESCAPE, R.id.buttonBRK),
+            new Keytbl(KeyEvent.KEYCODE_SLASH, R.id.buttonDIV),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_MULTIPLY, R.id.buttonMLT),
+            new Keytbl(KeyEvent.KEYCODE_MINUS, R.id.buttonMINUS),
+            new Keytbl(KeyEvent.KEYCODE_PLUS, R.id.buttonPLS),
+            new Keytbl(KeyEvent.KEYCODE_PERIOD, R.id.buttonDOT),
+    };
 
 }
