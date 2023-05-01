@@ -1,6 +1,9 @@
 package tk.horiuchi.pokecom;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.InputDevice;
+import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.GridLayout;
@@ -107,8 +110,8 @@ public class SubActivity1360 extends SubActivityBase {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-        stretchItemSize((GridLayout)findViewById(R.id.keyArea), (ImageView)findViewById(R.id.keyAreaImageView), 41);
-        stretchItemSize((GridLayout)findViewById(R.id.tenKeyArea), (ImageView)findViewById(R.id.tenkey));
+        stretchItemSize((GridLayout)findViewById(R.id.keyArea), (ImageView)findViewById(R.id.keyAreaImageView), 56);
+        //stretchItemSize((GridLayout)findViewById(R.id.tenKeyArea), (ImageView)findViewById(R.id.tenkey));
 
     }
 
@@ -127,5 +130,28 @@ public class SubActivity1360 extends SubActivityBase {
     //public void onClick(View v) {
     //    super.onClick(v);
     //}
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        int action = event.getAction();
+
+        int inputDevice = event.getSource();
+        Log.w("dispatchKeyEvent", String.format("inputDevice=%x", inputDevice));
+
+        if ((inputDevice & InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD) {
+            if (keyCode == KeyEvent.KEYCODE_ALT_LEFT || keyCode == KeyEvent.KEYCODE_ALT_RIGHT) {
+                if (action == KeyEvent.ACTION_DOWN) {
+                    Log.w("dispatchKeyEvent", "onKeyDown!! -> ALT hooked");
+                    kb.setBtnStatus(R.id.buttonMODE, true);
+                    mBtnStatusCnt[getBtnIdx(R.id.buttonMODE)] = -1;
+                } else {
+                    mBtnStatusCnt[getBtnIdx(R.id.buttonMODE)] = 3;
+                }
+                return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
 
 }

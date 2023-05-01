@@ -117,10 +117,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (getResources().getBoolean(R.bool.is_7inch)) {
             deviceType = type7inch;
             if (1.3f < dpdx_org && dpdx_org< 1.4f) {
-                // nexus7(2012) tvdpi の時はスケール２倍
-                dpdx = 2.0f;
+                // nexus7(2012) tvdpi の時はスケール２倍の少し小さめ
+                dpdx = 1.8f;
             } else if (dpdx_org == 1.0f) {
                 dpdx = 1.5f;    // mdpi の時はスケール1.5倍
+            } else if (dpdx_org == 2.0f) {
+                dpdx = 2.6f;
             } else {
                 // それ以外（多分xhdpiしかない？）の時はスケール３倍
                 dpdx = 3.0f;
@@ -136,6 +138,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
             if (dpdx_org == 1.5) {
                 // hdpiの時は少し小さめにする
                 dpdx = 1.3f;
+            } else if (dpdx_org == 2.0f) {
+                dpdx = 1.7f;
             } else if (dpdx_org == 3.5f) {
                 // xxxhdpiの時は少し大きめにする
                 dpdx = 4.0f;

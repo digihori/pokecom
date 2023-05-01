@@ -2,6 +2,8 @@ package tk.horiuchi.pokecom;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.InputDevice;
+import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.GridLayout;
@@ -182,6 +184,40 @@ public class SubActivity1261 extends SubActivityBase {
         } else {
             changeButtonFrame(mBtnResIds, false);
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        int action = event.getAction();
+
+        int inputDevice = event.getSource();
+        Log.w("dispatchKeyEvent", String.format("inputDevice=%x", inputDevice));
+
+        if ((inputDevice & InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD) {
+            if (keyCode == KeyEvent.KEYCODE_ALT_LEFT || keyCode == KeyEvent.KEYCODE_ALT_RIGHT) {
+                if (action == KeyEvent.ACTION_DOWN) {
+                    Log.w("dispatchKeyEvent", "onKeyDown!! -> ALT hooked");
+                    RadioGroup rg = (RadioGroup) findViewById(R.id.radioGroupMode);
+                    prog_mode += 1;
+                    if (prog_mode > 2) prog_mode = 0;
+                    switch (prog_mode) {
+                        default:
+                        case 0:
+                            rg.check(R.id.btnRun);
+                            break;
+                        case 1:
+                            rg.check(R.id.btnPro);
+                            break;
+                        case 2:
+                            rg.check(R.id.btnRsv);
+                            break;
+                    }
+                }
+                return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 
 }

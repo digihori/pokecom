@@ -1,6 +1,9 @@
 package tk.horiuchi.pokecom;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.InputDevice;
+import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -176,5 +179,25 @@ public class SubActivity1245 extends SubActivityBase12xx {
         }
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        int action = event.getAction();
+
+        int inputDevice = event.getSource();
+        Log.w("dispatchKeyEvent", String.format("inputDevice=%x", inputDevice));
+
+        if ((inputDevice & InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD) {
+            if (keyCode == KeyEvent.KEYCODE_ALT_LEFT || keyCode == KeyEvent.KEYCODE_ALT_RIGHT) {
+                if (action == KeyEvent.ACTION_DOWN) {
+                    Log.w("dispatchKeyEvent", "onKeyDown!! -> ALT hooked");
+                    prog_mode = !prog_mode;
+                    ((ToggleButton) findViewById(R.id.toggleButton)).setChecked(prog_mode);
+                }
+                return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
 
 }
