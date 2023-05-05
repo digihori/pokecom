@@ -1,25 +1,27 @@
 <resources>
 
     <!-- Base application theme. -->
-    <!--style name="AppTheme" parent="Theme.AppCompat.Light"-->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
     <!--style name="AppTheme" parent="@android:style/Theme.Light"-->
-    <style name="AppTheme" parent="@android:style/Theme.Holo.Light">
+    <!--style name="AppTheme" parent="@android:style/Theme.Holo.Light"-->
+    <!--style name="AppTheme" parent="Theme.MaterialComponents.DayNight"-->
 
     <!-- Customize your theme here. -->
-        <item name="windowNoTitle">false</item>
-        <item name="windowActionBar">true</item>
+        <!--item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item-->
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:actionBarStyle">@style/ActionBar</item>
+        <item name="navigationIcon">@drawable/ic_launcher_32dp </item>
     </style>
 
-    <style name="ActionBar" parent="@android:style/Widget.Holo.ActionBar.Solid">
+    <style name="ActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:background">@color/colorActionBar</item>
         <item name="android:titleTextStyle">@style/TitleTextStyle</item>
     </style>
 
-    <style name="TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textSize">@dimen/textsize_medium</item>
+    <style name="TitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">@dimen/textsize_large</item>
     </style>
 
     <style name="charButton" parent="android:Widget.Button">

@@ -41,6 +41,8 @@
 
     <string name="clock_emulate_checkbox_title">cpu clockエミュレート</string>
     <string name="clock_emulate_checkbox_summary">cpu clockのエミュレート速度を設定します</string>
+    <string name="storage_checkbox_title">レガシーファイル操作</string>
+    <string name="storage_checkbox_summary">レガシーファイル操作を使います(Android version 10 以前のみ有効)</string>
 
     <string name="vibrator_checkbox_title">バイブレータ機能</string>
     <string name="vibrator_checkbox_summary">キー押下時のバイブレータ機能を有効にします</string>

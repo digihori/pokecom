@@ -41,6 +41,8 @@
 
     <string name="clock_emulate_checkbox_title">cpu clock emulate</string>
     <string name="clock_emulate_checkbox_summary">Set the cpu emulation speed.</string>
+    <string name="storage_checkbox_title">legacy file io function</string>
+    <string name="storage_checkbox_summary">Use legacy file io function.If Android version 10 or less.</string>
 
     <string name="vibrator_checkbox_title">viblation</string>
     <string name="vibrator_checkbox_summary">Activate vibrator function when key is pressed.</string>

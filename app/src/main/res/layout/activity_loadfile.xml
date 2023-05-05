@@ -26,7 +26,6 @@
                 android:textSize="@dimen/textsize_medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,6 +52,12 @@
                     android:layout_height="wrap_content"
                     android:onClick="onClickFileSelect"/>
             </LinearLayout>
+            <TextView
+                android:id="@+id/textUri"
+                android:text=""
+                android:textSize="@dimen/textsize_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <RadioGroup
                 android:id="@+id/rg_filetype"

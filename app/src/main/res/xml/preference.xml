@@ -13,6 +13,12 @@
             android:entryValues="@array/cpu_clock_waitvalues"/>
 
         <CheckBoxPreference
+            android:key="storage_checkbox_key"
+            android:defaultValue="true"
+            android:title="@string/storage_checkbox_title"
+            android:summary="@string/storage_checkbox_summary" />
+
+        <CheckBoxPreference
             android:key="vibrator_checkbox_key"
             android:defaultValue="true"
             android:title="@string/vibrator_checkbox_title"

@@ -45,7 +45,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_percent="0.8"></SurfaceView>
+                    app:layout_constraintWidth_percent="0.84"></SurfaceView>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </FrameLayout>
 

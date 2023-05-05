@@ -1,35 +1,42 @@
 package tk.horiuchi.pokecom;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.IllegalFormatCodePointException;
 import java.util.IllegalFormatException;
@@ -41,7 +48,13 @@ import static tk.horiuchi.pokecom.MainActivity.title;
 import static tk.horiuchi.pokecom.Sc61860Base.kon_cnt;
 import static tk.horiuchi.pokecom.Sc61860Base.mainram;
 
-public class SubActivityBase extends Activity implements View.OnTouchListener {
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class SubActivityBase extends AppCompatActivity implements View.OnTouchListener {
     protected static SubActivityBase instance = null;
     public static boolean nosave = false;
     protected int activityId;
@@ -58,6 +71,7 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
     public static boolean clock_emulate_enable;
     public static int cpuClockWait;
     public static boolean vibrate_enable = true;
+    public static boolean legacy_storage_io;
     public static int machine;
     public static final int PC1401=1;
     public static final int PC1245=2;
@@ -105,6 +119,7 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
             debug_info = sp.getBoolean("debug_checkbox_key", false);
             beep_enable = sp.getBoolean("beep_checkbox_key", false);
             vibrate_enable = sp.getBoolean("vibrator_checkbox_key", true);
+            legacy_storage_io = sp.getBoolean("storage_checkbox_key", true);
 
 
 
@@ -217,7 +232,9 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
         Log.w("LOG", "w="+childWidth+" h="+childHeight);
         for (int i = 0; i < gl.getChildCount(); i++) {
             gl.getChildAt(i).setMinimumWidth(childWidth);
+            ((TextView) gl.getChildAt(i)).setMinWidth(childWidth);
             gl.getChildAt(i).setMinimumHeight(childHeight);
+            ((TextView) gl.getChildAt(i)).setMinHeight(childHeight);
         }
     }
     public void stretchItemSize(GridLayout gl, ImageView iv, int x) {
@@ -233,10 +250,14 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
         for (int i = 0; i < gl.getChildCount(); i++) {
             if (i == x) {
                 gl.getChildAt(i).setMinimumWidth(childWidth * 2);
+                ((TextView) gl.getChildAt(i)).setMinWidth(childWidth * 2);
                 gl.getChildAt(i).setMinimumHeight(childHeight);
+                ((TextView) gl.getChildAt(i)).setMinHeight(childHeight);
             } else {
                 gl.getChildAt(i).setMinimumWidth(childWidth);
+                ((TextView) gl.getChildAt(i)).setMinWidth(childWidth);
                 gl.getChildAt(i).setMinimumHeight(childHeight);
+                ((TextView) gl.getChildAt(i)).setMinHeight(childHeight);
             }
         }
     }
@@ -497,11 +518,11 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
 
 
     // BASICプログラムの読み込み
-    protected int load(String filename) {
+    protected int load(Uri uri) {
 
         int start = hilo(mainram[basicStartAdrH], mainram[basicStartAdrL]);
         //int len = load(filename, basicTextStart, 1);
-        int len = load(filename, start, 1);
+        int len = load(uri, start, 1);
         //Log.w("---LOAD", "len="+len);
 
         mainram[basicStartAdrL]=lobyte(start);
@@ -516,26 +537,27 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
     }
 
     // マシン語プログラムの読み込み
-    protected int load(String filename, int start) {
+    protected int load(Uri uri, int start) {
         int ret;
 
-        ret = load(filename, start, 0);
+        ret = load(uri, start, 0);
         return ret;
     }
 
     // プログラムの読み込みの共通処理
-    protected int load(String filename, int start, int mode) {
+    protected int load(Uri uri, int start, int mode) {
         int ret = 0;
-        FileInputStream fis = null;
+        //FileInputStream fis = null;
         //BufferedReader in = null;
 
         try {
-            fis = new FileInputStream(filename);
+            InputStream is = getContentResolver().openInputStream(uri);
+            //fis = new FileInputStream(filename);
             //in = new BufferedReader(new InputStreamReader(fis));
 
             byte buf[] = new byte[0x8000];
             int len, i = 0;
-            while ((len = fis.read(buf)) != -1) {
+            while ((len = is.read(buf)) != -1) {
                 i += len;
             }
 
@@ -560,7 +582,7 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
             }
 
             Log.w("LOAD", String.format("start=%04x", start));
-            Log.w("LOAD", String.format("file=%s length=%04x", filename, j));
+            Log.w("LOAD", String.format("file=%s length=%04x", uri, j));
 
             //for (int k=0; k < i; k++) {
             //    Log.w("LOAD", String.format("%04x:%02x", basicTextStart+k, mainram[basicTextStart+k]));
@@ -570,19 +592,19 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
         } catch (IOException e) {
             Log.d("LOAD", e.toString());
         } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            //if (fis != null) {
+            //    try {
+            //        fis.close();
+            //    } catch (IOException e) {
+            //        e.printStackTrace();
+            //    }
+            //}
         }
         return ret;
     }
 
     // BASIC プログラムの保存
-    protected void save(String filename) {
+    protected void save(Uri uri) {
         int start = hilo(mainram[basicStartAdrH], mainram[basicStartAdrL]);
         int end = hilo(mainram[basicEndAdrH], mainram[basicEndAdrL]);
 
@@ -592,57 +614,234 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
         }
         int data2[] = code2bas(data);
 
-        save(filename, data2);
+        save(uri, data2);
     }
 
     // マシン語プログラムの保存
-    protected void save(String filename, int start, int end) {
+    protected void save(Uri uri, int start, int end) {
         int data[] = new int[end - start + 1];
         for (int i = 0; i <= end - start; i++) {
             data[i] = mainram[start + i];
         }
         Log.w("SAVE", String.format("start=%04x end=%04x", start, end));
-        save(filename, data);
+        save(uri, data);
     }
 
     // ファイル保存の共通処理
-    protected void save(String filename, int data[]) {
-        FileOutputStream fos = null;
+    protected void save(Uri uri, int data[]) {
+        //FileOutputStream fos = null;
 
         try {
-            File dir = new File(default_path);
-            if (!dir.exists()) {
-                dir.mkdirs();
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                File dir = new File(default_path);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
             }
-            fos = new FileOutputStream(filename);
+            OutputStream os = getContentResolver().openOutputStream(uri);
+            //fos = new FileOutputStream(filename);
             byte buf[] = new byte[0x8000];
 
-            int i, j;
+            int i;
             for (i = 0; i < data.length; i++) {
                 buf[i] = (byte)(data[i] & 0xff);
             }
-            fos.write(buf, 0, i);
-            fos.flush();
+            os.write(buf, 0, i);
+            os.flush();
+            os.close();
 
             //Log.w("SAVE", String.format("start=%04x end=%04x", start, end));
-            Log.w("SAVE", String.format("file=%s length=%04x", filename, i));
+            Log.w("SAVE", String.format("file=%s length=%04x", uri, i));
         } catch (IOException e) {
             Log.d("MainActivity", e.toString());
         } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            //if (fos != null) {
+            //    try {
+            //        fos.close();
+            //    } catch (IOException e) {
+            //        e.printStackTrace();
+            //    }
+            //}
         }
     }
 
+    private final ActivityResultLauncher<Intent> actLoadResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    if (result.getData() != null) {
+                        //結果を受け取った後の処理
+                        Uri uri = result.getData().getData();
+                        Log.w("actLoadResultLauncher", String.format("uri=%s", uri));
+                        //String text = getFileNameFromUri(this, uri);
+                        //Log.w("actLoadResultLauncher", String.format("filename=%s", text));
+                        if (isTextFile(uri)) {
+                            // BASIC
+                            Log.w("isTextFile", String.format("text!"));
+                            int len = load(uri);
+                            Toast.makeText(this, String.format("loaded:%s len:%d", uri, len), Toast.LENGTH_LONG).show();
+                        } else {
+                            // binary
+                            Log.w("isTextFile", String.format("binary!"));
+                            int x = getStartAddrAndBinLoad(uri);
+                        }
+                    }
+                }
+            });
+
+    private boolean isTextFile(Uri uri) {
+        try (InputStream inputStream = getContentResolver().openInputStream(uri)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead = inputStream.read(buffer);
+            for (int i = 0; i < bytesRead; i++) {
+                int b = buffer[i];
+                if (b < 32 && b != '\t' && b != '\r' && b != '\n') {
+                    return false;
+                }
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private String getFileNameFromUri(@NonNull Context context, Uri uri) {
+        // is null
+        if (null == uri) {
+            return null;
+        }
+
+        // get scheme
+        String scheme = uri.getScheme();
+
+        // get file name
+        String fileName = null;
+        switch (scheme) {
+            case "content":
+                String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
+                Cursor cursor = context.getContentResolver()
+                        .query(uri, projection, null, null, null);
+                if (cursor != null) {
+                    if (cursor.moveToFirst()) {
+                        fileName = cursor.getString(
+                                cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME));
+                    }
+                    cursor.close();
+                }
+                break;
+
+            case "file":
+                fileName = new File(uri.getPath()).getName();
+                break;
+
+            default:
+                break;
+        }
+        return fileName;
+    }
+
+    private int getFileNameToAddress(String filename) {
+        String[] token = filename.split("[-.]", 0);
+        for (int i = 0; i < token.length; i++) {
+            Log.w("getFileNameToAddress", String.format("token%d = %s", i, token[i]));
+        }
+        try {
+            int adr = Integer.parseInt(token[token.length - 2], 16);
+            if (0x2000 <= adr && adr <= 0xffff) {
+                Log.w("getFileNameToAddress", String.format("data(%04x).", adr));
+                return(adr);
+            } else {
+                Log.w("getFileNameToAddress", String.format("Invalid data(%04x).", adr));
+            }
+        } catch (NumberFormatException e) {
+            Log.w("getFileNameToAddress", "NumberFormatException occured.");
+            return 0;
+        }
+        return(0);
+    }
+
+    private int getStartAddrAndBinLoad(Uri uri) {
+        String filename = getFileNameFromUri(this, uri);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Input start address")
+                //.setMessage("メッセージ")
+                //.setView(R.id.custom_edit_text1)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //EditText editText = ((AlertDialog) dialog).findViewById(R.id.custom_edit_text1);
+                        // 入力されたデータを使用する処理
+                        /*
+                        if (!editText.getText().toString().isEmpty()) {
+                            String inputText = editText.getText().toString();
+                            Log.w("custom dialog", String.format("inputText=%s", inputText));
+
+                            //int len = 0;
+                            try {
+                                int addr = Integer.decode(inputText);
+                                int len = load(uri, addr);
+                                Toast.makeText(SubActivityBase.this, String.format("loaded:%s len:%d addr:%X", uri, len, addr), Toast.LENGTH_LONG).show();
+                            } catch (NumberFormatException e) {
+                                ;
+                                Toast.makeText(SubActivityBase.this, "Error occured.", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+
+                         */
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // キャンセルをクリックした時の処理
+                    }
+                });
+
+        LayoutInflater inflater = getLayoutInflater();
+        //View customEditTextLayout = inflater.inflate(R.layout.custom_edit_text_layout1, null);
+        //builder.setView(customEditTextLayout);
+        //TextView tv = customEditTextLayout.findViewById(R.id.label1);
+        //tv.setText("start address");
+        //EditText ed = customEditTextLayout.findViewById(R.id.custom_edit_text1);
+        //int x = getFileNameToAddress(filename);
+        //if (x != 0) ed.setText(String.format("0x%X", x));
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        return(1);
+    }
+
+    public void actLoadx() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
+        actLoadResultLauncher.launch(intent);
+    }
 
     public void actLoad(){
         Intent intent = new android.content.Intent(getApplication(), FileLoad.class);
         startActivityForResult(intent, 0);
+    }
+
+    private final ActivityResultLauncher<Intent> actSaveResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    if (result.getData() != null) {
+                        //結果を受け取った後の処理
+                        Uri uri = result.getData().getData();
+                        Log.w("actSaveResultLauncher", String.format("uri=%s", uri));
+                        save(uri);
+                        Toast.makeText(this, "saved:" + uri, Toast.LENGTH_LONG).show();
+                        //String x = result.getData().getStringExtra("PARAM");
+                    }
+                }
+            });
+
+    private void actSavex() {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        actSaveResultLauncher.launch(intent);
     }
 
     public void actSave() {
@@ -652,36 +851,37 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
 
         Log.w("LOG", "onActivityResult.");
         switch (requestCode) {
             case 0:
                 if (resultCode == RESULT_OK) {
-
-                    String txt1 = data.getExtras().getString("filePath");
-                    if (txt1 != null) {
-                        path = txt1; // オープンするファイルのパスとファイル名
-                        Log.w("LOG", "path="+path);
+                    String stringUri = data.getExtras().getString("uri");
+                    Uri uri = null;
+                    if (stringUri != null) {
+                        uri = Uri.parse(stringUri); // オープンするファイルのパスとファイル名
+                        Log.w("LOG", "uri="+stringUri);
                     }
-                    String txt2 = data.getExtras().getString("fileType");
-                    if (txt2 != null) {
-                        filetype = txt2;
+                    String txt = data.getExtras().getString("fileType");
+                    if (txt != null) {
+                        filetype = txt;
                         Log.w("LOG", "type="+filetype);
                     }
                     startAddress = data.getExtras().getInt("startAddress");
 
-                    Log.w("LOG", "startAddress="+String.format("%04x", startAddress));
+                    if (uri != null && filetype.equals("BASIC")) {
+                        int len = load(uri);
+                        Toast.makeText(SubActivityBase.this, String.format("loaded:%s len:%d", uri, len), Toast.LENGTH_LONG).show();
 
-                    if (txt1 != null && filetype.equals("BASIC")) {
-                        int len = load(path);
                         Toast.makeText(this, "loaded:"+path+"("+len+")", Toast.LENGTH_LONG).show();
-                    } else if (txt1 != null && filetype.equals("BINARY")) {
-                        int len = load(path, startAddress);
-                        Toast.makeText(this, "loaded:"+path+"("+len+")"+" "+startAddress+"-", Toast.LENGTH_LONG).show();
+                    } else if (uri != null && filetype.equals("BINARY")) {
+                        int len = load(uri, startAddress);
+                        Toast.makeText(SubActivityBase.this, String.format("loaded:%s len:%d addr:%X", uri, len, startAddress), Toast.LENGTH_LONG).show();
                     } else {
                         // エラー
                     }
+
                 } else {
                     // 何もしない
                     Log.w("LOG", "ファイル読み出しがキャンセルされた");
@@ -689,14 +889,16 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                 break;
             case 1:
                 if (resultCode == RESULT_OK) {
-                    String txt1 = data.getExtras().getString("filePath");
-                    if (txt1 != null) {
-                        path = default_path + "/" + txt1; // オープンするファイルのパスとファイル名
-                        Log.w("LOG", "path=" + path);
+
+                    String stringUri = data.getExtras().getString("uri");
+                    Uri uri = null;
+                    if (stringUri != null) {
+                        uri = Uri.parse(stringUri); // オープンするファイルのパスとファイル名
+                        Log.w("LOG", "uri="+stringUri);
                     }
-                    String txt2 = data.getExtras().getString("fileType");
-                    if (txt2 != null) {
-                        filetype = txt2;
+                    String txt = data.getExtras().getString("fileType");
+                    if (txt != null) {
+                        filetype = txt;
                         Log.w("LOG", "type="+filetype);
                     }
                     startAddress = data.getExtras().getInt("startAddress");
@@ -704,15 +906,14 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
                     endAddress = data.getExtras().getInt("endAddress");
                     Log.w("LOG", "endAddress="+String.format("%04x", endAddress));
 
-                    if (txt1 != null && filetype.equals("BASIC")) {
-                        save(path);
-                        Toast.makeText(this, "saved:"+path, Toast.LENGTH_LONG).show();
-                    } else if (txt1 != null && filetype.equals("BINARY")) {
-                        save(path, startAddress, endAddress);
-                        Toast.makeText(this, "saved:"+path+" "+startAddress+"-"+endAddress, Toast.LENGTH_LONG).show();
+                    if (uri != null && filetype.equals("BASIC")) {
+                        save(uri);
+                        Toast.makeText(SubActivityBase.this, String.format("saved:%s", uri), Toast.LENGTH_LONG).show();
+                    } else if (uri != null && filetype.equals("BINARY")) {
+                        save(uri, startAddress, endAddress);
+                        Toast.makeText(SubActivityBase.this, String.format("saved:%s addr:%X-%X", uri, startAddress, endAddress), Toast.LENGTH_LONG).show();
                     } else {
                         // エラー
-                        Log.w("SAVE", "error!");
                     }
                 } else {
                     Log.w("LOG", "ファイル保存がキャンセルされた");
@@ -737,11 +938,23 @@ public class SubActivityBase extends Activity implements View.OnTouchListener {
         switch (item.getItemId()) {
             case R.id.optionsMenu_01:
                 nosave = true;
-                actLoad();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || !legacy_storage_io) {
+                    // Android 11(Q)以降はストレージアクセス権限が厳密になったため
+                    //actLoadx();
+                    actLoad();
+                } else {
+                    actLoad();
+                }
                 return true;
             case R.id.optionsMenu_02:
                 nosave = true;
-                actSave();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || !legacy_storage_io) {
+                    // Android 11(Q)以降はストレージアクセス権限が厳密になったため
+                    //actSavex();
+                    actSave();
+                } else {
+                    actSave();
+                }
                 return true;
             case R.id.optionsMenu_03:   // reset
                 modeInit();

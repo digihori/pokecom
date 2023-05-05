@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import static tk.horiuchi.pokecom.SubActivityBase.beep_enable;
 //import static tk.horiuchi.pokecom.SubActivityBase.clock_emulate_enable;
 import static tk.horiuchi.pokecom.SubActivityBase.cpuClockWait;
+import static tk.horiuchi.pokecom.SubActivityBase.legacy_storage_io;
 import static tk.horiuchi.pokecom.SubActivityBase.debug_info;
 import static tk.horiuchi.pokecom.SubActivityBase.vibrate_enable;
 
@@ -34,6 +35,7 @@ public class MyPreferenceActivity extends PreferenceActivity {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         //clock_emulate_enable = sp.getBoolean("clock_emulate_checkbox_key", false);
         cpuClockWait = Integer.parseInt(sp.getString("cpu_clock_wait_key", "2"));
+        legacy_storage_io = sp.getBoolean("storage_checkbox_key", true);
         debug_info = sp.getBoolean("debug_checkbox_key", false);
         beep_enable = sp.getBoolean("beep_checkbox_key", false);
         vibrate_enable = sp.getBoolean("vibrator_checkbox_key", true);    }

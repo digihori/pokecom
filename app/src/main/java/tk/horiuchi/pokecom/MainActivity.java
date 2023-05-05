@@ -2,24 +2,40 @@ package tk.horiuchi.pokecom;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.documentfile.provider.DocumentFile;
+
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -30,7 +46,7 @@ import java.io.IOException;
  * Created by yoshimine on 2017/07/29.
  */
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -44,8 +60,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public final static int type10inch = 2;
     public static int deviceType;
     public static String title;
-    public final static String app_path = Environment.getExternalStorageDirectory().getPath()+"/pokecom";
-    public final static String rom_path = app_path + "/rom";
+    public final static String old_app_path = Environment.getExternalStorageDirectory().getPath()+"/pokecom";
+    public final static String old_rom_path = old_app_path + "/rom";
+    public static String rom_path_v2 = "";
+    public static Uri rom_path_uri = null;
+    public static DocumentFile rom_dir = null;
     public static boolean cacheClear = false;
     private File pc1245 = null;
     private File pc1251 = null;
@@ -57,7 +76,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private File pc1450 = null;
     private File pc1460 = null;
     private File pc1470 = null;
-
+    private SharedPreferences prefs;
+    private boolean debug = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,11 +155,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Log.w("Main", String.format("deviceType=10inch tablet(%d) scale=%f\n", deviceType, dpdx));
         } else {
             deviceType = typePhone;
-            if (dpdx_org == 1.5) {
+            if (dpdx_org == 1.5f) {
                 // hdpiの時は少し小さめにする
                 dpdx = 1.3f;
             } else if (dpdx_org == 2.0f) {
                 dpdx = 1.7f;
+            } else if (2.6f < dpdx_org && dpdx_org < 3.0f) {
+                // pixel6はdensity=2.875とか変な値？なので
+                dpdx = 3.0f;
             } else if (dpdx_org == 3.5f) {
                 // xxxhdpiの時は少し大きめにする
                 dpdx = 4.0f;
@@ -164,15 +187,58 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
         */
 
-        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        final ImageView iv = (ImageView)findViewById(R.id.pc_img);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String s = prefs.getString("uri", "");
+        if (!s.isEmpty()) {
+            rom_path_uri = Uri.parse(s);
+            rom_dir = DocumentFile.fromTreeUri(this, rom_path_uri);
+            Log.w("onCreate", String.format("rom_path_v2 loaded -> '%s'", rom_path_uri));
+            //rom_path_v2 = getPathFromUri(rom_path_uri);
+            //Log.w("onCreate", String.format("rom_path loaded -> '%s'", rom_path_v2));
+        } else {
+            rom_path_uri = null;
+            rom_dir = null;
+            Log.w("onCreate", String.format("rom_path unloaded"));
+        }
+
+        debug = prefs.getBoolean("debug", false);
+
+
+        TextView title = findViewById(R.id.title);
+        TextView dmsg = findViewById(R.id.debug_msg);
+        dmsg.setText(dtext);
+        dmsg.setVisibility(debug ? View.VISIBLE : View.INVISIBLE);
+
+        title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                debug = !debug;
+                prefs.edit().putBoolean("debug", debug).apply();
+                dmsg.setVisibility(debug ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
+
+        TextView textView1 = findViewById(R.id.rom_uri_title);
+        TextView textView2 = findViewById(R.id.rom_uri_string);
+        textView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rom_path_uri = null;
+                rom_dir = null;
+                textView2.setText("");
+                prefs.edit().putString("uri", "").apply();
+                reloadRomList();
+            }
+        });
+
+        //final ImageView iv = (ImageView)findViewById(R.id.pc_img);
         // ラジオグループのチェック状態変更イベントを登録
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             // チェック状態変更時に呼び出されるメソッド
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 // チェック状態を保存しておく
-                sp.edit().putInt("SelectStatus", checkedId).commit();
+                prefs.edit().putInt("SelectStatus", checkedId).commit();
 
 
                 /*
@@ -217,7 +283,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         });
 
         // 前回のチェックボックス状態を復元
-        int id = sp.getInt("SelectStatus", 0);
+        int id = prefs.getInt("SelectStatus", 0);
         if (id == R.id.RadioButton1245 || id == R.id.RadioButton1251 || id == R.id.RadioButton1261 ||
                 id == R.id.RadioButton1350 || id == R.id.RadioButton1360 ||
                 id == R.id.RadioButton1401 || id == R.id.RadioButton1402  ||
@@ -233,6 +299,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Log.w("LOG", "!!!onCreate!!!");
     }
 
+    private String getPathFromUri(Uri uri) {
+        String path = "";
+        String scheme = uri.getScheme();
+        if ("file".equals(scheme)) {
+            path = uri.getPath();
+        } else if("content".equals(scheme)) {
+            String[] projection = {MediaStore.MediaColumns.DATA};
+            Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA));
+                }
+                cursor.close();
+            } else {
+                Log.w("getPathFromUri", String.format("rom_path error"));
+            }
+        }
+        return path;
+    }
 
     @Override
     protected void onResume() {
@@ -331,121 +416,185 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void reloadRomList() {
+        String rom_path;
 
         // ディレクトリが存在しない時はディレクトリを作成してダミーファイルを作成する
-        File app_dir = new File(app_path);
-        if (!app_dir.exists()) {
-            app_dir.mkdir();
-            Log.w("reloadRomList", String.format("mkdir ->'%s'", app_path));
-        }
-        File rom_dir = new File(rom_path);
-        if (!rom_dir.exists()) {
-            rom_dir.mkdirs();
+        // Android10以降はやらない
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            rom_path = old_rom_path;
+            File app_dir = new File(old_app_path);
+            if (!app_dir.exists()) {
+                app_dir.mkdir();
+                Log.w("reloadRomList", String.format("mkdir ->'%s'", old_app_path));
+            }
+            File dir = new File(rom_path);
+            if (!dir.exists()) {
+                dir.mkdirs();
 
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(rom_path+"/pc1245mem.bin");
-                byte buf[] = new byte[0x8000];
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(rom_path + "/pc1245mem.bin");
+                    byte buf[] = new byte[0x8000];
 
-                int i;
-                for (i = 0; i < dummyRom.length; i++) {
-                    buf[i] = (byte)(dummyRom[i] & 0xff);
-                }
-                fos.write(buf, 0, i);
-                fos.flush();
-                Log.d("MainActivity", "dummyRom file created.");
+                    int i;
+                    for (i = 0; i < dummyRom.length; i++) {
+                        buf[i] = (byte) (dummyRom[i] & 0xff);
+                    }
+                    fos.write(buf, 0, i);
+                    fos.flush();
+                    Log.d("MainActivity", "dummyRom file created.");
 
-            } catch (IOException e) {
-                Log.d("MainActivity", e.toString());
-            } finally {
-                if (fos != null) {
-                    try {
-                        fos.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                } catch (IOException e) {
+                    Log.d("MainActivity", e.toString());
+                } finally {
+                    if (fos != null) {
+                        try {
+                            fos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
-        }
-
-
-        // ROMリストの表示色を更新する
-        pc1245 = new File(rom_path+"/pc1245mem.bin");
-        RadioButton rb1245 = (RadioButton)findViewById(R.id.RadioButton1245);
-        if (pc1245.exists()) {
-            rb1245.setTextColor(Color.BLACK);
+            if (rom_path != "" && !rom_path.isEmpty()) {
+                TextView t = findViewById(R.id.rom_uri_string);
+                File f = new File(rom_path);
+                t.setText(Uri.fromFile(f).toString());
+                // ROMリストの表示色を更新する
+                pc1245 = new File(rom_path + "/pc1245mem.bin");
+                RadioButton rb1245 = (RadioButton) findViewById(R.id.RadioButton1245);
+                if (pc1245.exists()) {
+                    rb1245.setTextColor(Color.BLACK);
+                } else {
+                    rb1245.setTextColor(Color.LTGRAY);
+                }
+                pc1251 = new File(rom_path + "/pc1251mem.bin");
+                RadioButton rb1251 = (RadioButton) findViewById(R.id.RadioButton1251);
+                if (pc1251.exists()) {
+                    rb1251.setTextColor(Color.BLACK);
+                } else {
+                    rb1251.setTextColor(Color.LTGRAY);
+                }
+                pc1261 = new File(rom_path + "/pc1261mem.bin");
+                RadioButton rb1261 = (RadioButton) findViewById(R.id.RadioButton1261);
+                if (pc1261.exists()) {
+                    rb1261.setTextColor(Color.BLACK);
+                } else {
+                    rb1261.setTextColor(Color.LTGRAY);
+                }
+                pc1350 = new File(rom_path + "/pc1350mem.bin");
+                RadioButton rb1350 = (RadioButton) findViewById(R.id.RadioButton1350);
+                if (pc1350.exists()) {
+                    rb1350.setTextColor(Color.BLACK);
+                } else {
+                    rb1350.setTextColor(Color.LTGRAY);
+                }
+                pc1360 = new File(rom_path + "/pc1360mem.bin");
+                File pc1360bank = new File(rom_path + "/pc1360bank.bin");
+                RadioButton rb1360 = (RadioButton) findViewById(R.id.RadioButton1360);
+                if (pc1360.exists() && pc1360bank.exists()) {
+                    rb1360.setTextColor(Color.BLACK);
+                } else {
+                    rb1360.setTextColor(Color.LTGRAY);
+                }
+                pc1401 = new File(rom_path + "/pc1401mem.bin");
+                RadioButton rb1401 = (RadioButton) findViewById(R.id.RadioButton1401);
+                if (pc1401.exists()) {
+                    rb1401.setTextColor(Color.BLACK);
+                } else {
+                    rb1401.setTextColor(Color.LTGRAY);
+                }
+                pc1402 = new File(rom_path + "/pc1402mem.bin");
+                RadioButton rb1402 = (RadioButton) findViewById(R.id.RadioButton1402);
+                if (pc1402.exists()) {
+                    rb1402.setTextColor(Color.BLACK);
+                } else {
+                    rb1402.setTextColor(Color.LTGRAY);
+                }
+                pc1450 = new File(rom_path + "/pc1450mem.bin");
+                RadioButton rb1450 = (RadioButton) findViewById(R.id.RadioButton1450);
+                if (pc1450.exists()) {
+                    rb1450.setTextColor(Color.BLACK);
+                } else {
+                    rb1450.setTextColor(Color.LTGRAY);
+                }
+                pc1460 = new File(rom_path + "/pc1460mem.bin");
+                File pc1460bank = new File(rom_path + "/pc1460bank.bin");
+                RadioButton rb1460 = (RadioButton) findViewById(R.id.RadioButton1460);
+                if (pc1460.exists() && pc1460bank.exists()) {
+                    rb1460.setTextColor(Color.BLACK);
+                } else {
+                    rb1460.setTextColor(Color.LTGRAY);
+                }
+                pc1470 = new File(rom_path + "/pc1470mem.bin");
+                File pc1470bank = new File(rom_path + "/pc1470bank.bin");
+                RadioButton rb1470 = (RadioButton) findViewById(R.id.RadioButton1470);
+                if (pc1470.exists() && pc1470bank.exists()) {
+                    rb1470.setTextColor(Color.BLACK);
+                } else {
+                    rb1470.setTextColor(Color.LTGRAY);
+                }
+            }
         } else {
-            rb1245.setTextColor(Color.LTGRAY);
+            if (rom_path_uri != null && rom_dir != null) {
+                TextView t = findViewById(R.id.rom_uri_string);
+                t.setText(rom_path_uri.toString());
+                //DocumentFile[] files = rom_dir.listFiles();
+                //for (DocumentFile file : files) {
+                //    Log.w("reloadRomList", String.format("%s", file.getName()));
+                //}
+            }
+            for (int i = 0; i < chktbl.length; i++) {
+                RadioButton rb = findViewById(chktbl[i].id);
+                if (rom_dir != null &&
+                        rom_dir.findFile(chktbl[i].file1) != null &&
+                        (chktbl[i].file2.equals("") || rom_dir.findFile(chktbl[i].file2) != null)) {
+                    rb.setTextColor(Color.BLACK);
+                    chktbl[i].valid = true;
+                } else {
+                    rb.setTextColor(Color.LTGRAY);
+                    chktbl[i].valid = false;
+                }
+            }
         }
-        pc1251 = new File(rom_path+"/pc1251mem.bin");
-        RadioButton rb1251 = (RadioButton)findViewById(R.id.RadioButton1251);
-        if (pc1251.exists()) {
-            rb1251.setTextColor(Color.BLACK);
-        } else {
-            rb1251.setTextColor(Color.LTGRAY);
-        }
-        pc1261 = new File(rom_path+"/pc1261mem.bin");
-        RadioButton rb1261 = (RadioButton)findViewById(R.id.RadioButton1261);
-        if (pc1261.exists()) {
-            rb1261.setTextColor(Color.BLACK);
-        } else {
-            rb1261.setTextColor(Color.LTGRAY);
-        }
-        pc1350 = new File(rom_path+"/pc1350mem.bin");
-        RadioButton rb1350 = (RadioButton)findViewById(R.id.RadioButton1350);
-        if (pc1350.exists()) {
-            rb1350.setTextColor(Color.BLACK);
-        } else {
-            rb1350.setTextColor(Color.LTGRAY);
-        }
-        pc1360 = new File(rom_path+"/pc1360mem.bin");
-        File pc1360bank = new File(rom_path+"/pc1360bank.bin");
-        RadioButton rb1360 = (RadioButton)findViewById(R.id.RadioButton1360);
-        if (pc1360.exists() && pc1360bank.exists()) {
-            rb1360.setTextColor(Color.BLACK);
-        } else {
-            rb1360.setTextColor(Color.LTGRAY);
-        }
-        pc1401 = new File(rom_path+"/pc1401mem.bin");
-        RadioButton rb1401 = (RadioButton)findViewById(R.id.RadioButton1401);
-        if (pc1401.exists()) {
-            rb1401.setTextColor(Color.BLACK);
-        } else {
-            rb1401.setTextColor(Color.LTGRAY);
-        }
-        pc1402 = new File(rom_path+"/pc1402mem.bin");
-        RadioButton rb1402 = (RadioButton)findViewById(R.id.RadioButton1402);
-        if (pc1402.exists()) {
-            rb1402.setTextColor(Color.BLACK);
-        } else {
-            rb1402.setTextColor(Color.LTGRAY);
-        }
-        pc1450 = new File(rom_path+"/pc1450mem.bin");
-        RadioButton rb1450 = (RadioButton)findViewById(R.id.RadioButton1450);
-        if (pc1450.exists()) {
-            rb1450.setTextColor(Color.BLACK);
-        } else {
-            rb1450.setTextColor(Color.LTGRAY);
-        }
-        pc1460 = new File(rom_path+"/pc1460mem.bin");
-        File pc1460bank = new File(rom_path+"/pc1460bank.bin");
-        RadioButton rb1460 = (RadioButton)findViewById(R.id.RadioButton1460);
-        if (pc1460.exists() && pc1460bank.exists()) {
-            rb1460.setTextColor(Color.BLACK);
-        } else {
-            rb1460.setTextColor(Color.LTGRAY);
-        }
-        pc1470 = new File(rom_path+"/pc1470mem.bin");
-        File pc1470bank = new File(rom_path+"/pc1470bank.bin");
-        RadioButton rb1470 = (RadioButton)findViewById(R.id.RadioButton1470);
-        if (pc1470.exists() && pc1470bank.exists()) {
-            rb1470.setTextColor(Color.BLACK);
-        } else {
-            rb1470.setTextColor(Color.LTGRAY);
-        }
-
     }
+    private class ChkTbl {
+        int id;
+        String file1;
+        String file2;
+        boolean valid;
+        ChkTbl(int i, String f1, String f2) {
+            id = i;
+            file1 = f1;
+            file2 = f2;
+            valid = false;
+        }
+    }
+    private ChkTbl chktbl[] = {
+            new ChkTbl(R.id.RadioButton1245, "pc1245mem.bin", ""),
+            new ChkTbl(R.id.RadioButton1251, "pc1251mem.bin", ""),
+            new ChkTbl(R.id.RadioButton1261, "pc1261mem.bin", ""),
+            new ChkTbl(R.id.RadioButton1350, "pc1350mem.bin", ""),
+            new ChkTbl(R.id.RadioButton1360, "pc1360mem.bin", "pc1360bank.bin"),
+            new ChkTbl(R.id.RadioButton1401, "pc1401mem.bin", ""),
+            new ChkTbl(R.id.RadioButton1402, "pc1402mem.bin", ""),
+            new ChkTbl(R.id.RadioButton1450, "pc1450mem.bin", ""),
+            new ChkTbl(R.id.RadioButton1460, "pc1460mem.bin", "pc1460bank.bin"),
+            new ChkTbl(R.id.RadioButton1470, "pc1470mem.bin", "pc1470bank.bin")
+    };
 
+    private boolean isRadioButtonEnable(int id) {
+        for (int i = 0; i < chktbl.length; i++) {
+            if (chktbl[i].id == id) {
+                if (chktbl[i].valid) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
     private final int dummyRom[] = {
             // 1245で「Hello!」と表示するプログラム
             0x03, 0x00, 0x02, 0x1b, 0x01, 0x01, 0x84, 0x13,
@@ -470,70 +619,70 @@ public class MainActivity extends Activity implements View.OnClickListener {
             int rb_id = radioGroup.getCheckedRadioButtonId();
             switch (rb_id) {
                 case R.id.RadioButton1245:
-                    if (pc1245 != null && pc1245.exists()) {
+                    if (isRadioButtonEnable(rb_id) || pc1245 != null && pc1245.exists()) {
                         intent = new Intent(getApplication(), SubActivity1245.class);
                     } else {
                         return;
                     }
                     break;
                 case R.id.RadioButton1251:
-                    if (pc1251 != null && pc1251.exists()) {
+                    if (isRadioButtonEnable(rb_id) || pc1251 != null && pc1251.exists()) {
                         intent = new Intent(getApplication(), SubActivity1251.class);
                     } else {
                         return;
                     }
                     break;
                 case R.id.RadioButton1261:
-                    if (pc1261 != null && pc1261.exists()) {
+                    if (isRadioButtonEnable(rb_id) || pc1261 != null && pc1261.exists()) {
                         intent = new Intent(getApplication(), SubActivity1261.class);
                     } else {
                         return;
                     }
                     break;
                 case R.id.RadioButton1350:
-                    if (pc1350 != null && pc1350.exists()) {
+                    if (isRadioButtonEnable(rb_id) || pc1350 != null && pc1350.exists()) {
                         intent = new Intent(getApplication(), SubActivity1350.class);
                     } else {
                         return;
                     }
                     break;
                 case R.id.RadioButton1360:
-                    if (pc1360 != null && pc1360.exists()) {
+                    if (isRadioButtonEnable(rb_id) || pc1360 != null && pc1360.exists()) {
                         intent = new Intent(getApplication(), SubActivity1360.class);
                     } else {
                         return;
                     }
                     break;
                 case R.id.RadioButton1401:
-                    if (pc1401 != null && pc1401.exists()) {
+                    if (isRadioButtonEnable(rb_id) || pc1401 != null && pc1401.exists()) {
                         intent = new Intent(getApplication(), SubActivity1401.class);
                     } else {
                         return;
                     }
                     break;
                 case R.id.RadioButton1402:
-                    if (pc1402 != null && pc1402.exists()) {
+                    if (isRadioButtonEnable(rb_id) || pc1402 != null && pc1402.exists()) {
                         intent = new Intent(getApplication(), SubActivity1402.class);
                     } else {
                         return;
                     }
                     break;
                 case R.id.RadioButton1450:
-                    if (pc1450 != null && pc1450.exists()) {
+                    if (isRadioButtonEnable(rb_id) || pc1450 != null && pc1450.exists()) {
                         intent = new Intent(getApplication(), SubActivity1450.class);
                     } else {
                         return;
                     }
                     break;
                 case R.id.RadioButton1460:
-                    if (pc1460 != null && pc1460.exists()) {
+                    if (isRadioButtonEnable(rb_id) || pc1460 != null && pc1460.exists()) {
                         intent = new Intent(getApplication(), SubActivity1460.class);
                     } else {
                         return;
                     }
                     break;
                 case R.id.RadioButton1470:
-                    if (pc1470 != null && pc1470.exists()) {
+                    if (isRadioButtonEnable(rb_id) || pc1470 != null && pc1470.exists()) {
                         intent = new Intent(getApplication(), SubActivity1470.class);
                     } else {
                         return;
@@ -563,6 +712,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         sp.edit().putInt("SelectedRom", 0).commit();
         Log.w("LOG", "!!!onActivityResult   SelectRom cleared.");
 
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 
@@ -575,6 +725,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.settings:
+                Log.w("menu", "settings.");
+                dirInit();
+                break;
             case R.id.about:
                 // ボタンをタップした際の処理を記述
                 AboutDialogFragment dialog = new AboutDialogFragment();
@@ -587,4 +741,28 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
         return true;
     }
+
+    private void dirInit() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        actInitResultLauncher.launch(intent);
+    }
+
+    private final ActivityResultLauncher<Intent> actInitResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    if (result.getData() != null) {
+                        //結果を受け取った後の処理
+                        rom_path_uri = result.getData().getData();
+                        getContentResolver().takePersistableUriPermission(rom_path_uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        String stringUri = rom_path_uri.toString();
+                        //final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                        prefs.edit().putString("uri", stringUri).apply();
+                        Log.w("actInitResultLauncher", String.format("uri=%s", stringUri));
+                        rom_dir = DocumentFile.fromTreeUri(this, rom_path_uri);
+                        //rom_path_v2 = getPathFromUri(rom_path_uri);
+                        reloadRomList();
+                    }
+                }
+            });
+
 }

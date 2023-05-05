@@ -1,19 +1,26 @@
 package tk.horiuchi.pokecom;
 
 import android.content.Context;
+import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static tk.horiuchi.pokecom.KeyboardBase.mBtnStatus;
-import static tk.horiuchi.pokecom.MainActivity.rom_path;
+import static tk.horiuchi.pokecom.MainActivity.old_rom_path;
+import static tk.horiuchi.pokecom.MainActivity.rom_dir;
 import static tk.horiuchi.pokecom.MainLoop1261.digi;
 import static tk.horiuchi.pokecom.MainLoop1261.state;
 import static tk.horiuchi.pokecom.SubActivity1261.prog_mode;
 import static tk.horiuchi.pokecom.SubActivityBase.beep_enable;
 import static tk.horiuchi.pokecom.SubActivityBase.kb;
 import static tk.horiuchi.pokecom.SubActivityBase.nosave;
+
+import androidx.documentfile.provider.DocumentFile;
 
 /**
  * Created by yoshimine on 2017/07/29.
@@ -91,15 +98,25 @@ public class Sc61860_1261 extends Sc61860Base {
 
     @Override
     protected void LoadRomImage(Context c) {
-
-        FileInputStream fis = null;
+        InputStream is = null;
+        Uri uri = null;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            File f = new File(old_rom_path+"/pc1261mem.bin");
+            uri = Uri.fromFile(f);
+        } else {
+            DocumentFile src = rom_dir.findFile("pc1261mem.bin");
+            if (src != null) {
+                uri =src.getUri();
+            }
+        }
+        //FileInputStream fis = null;
 
         try {
-            fis = new FileInputStream(rom_path+"/pc1261mem.bin");
+            is = c.getContentResolver().openInputStream(uri);
 
             byte buf[] = new byte[MAINRAMSIZ];
             int len, i = 0;
-            while ((len = fis.read(buf)) != -1) {
+            while ((len = is.read(buf)) != -1) {
                 i += len;
             }
             for (int j = 0; j < i; j++) {
@@ -114,9 +131,9 @@ public class Sc61860_1261 extends Sc61860Base {
             Log.d("ROM", e.toString());
             halt = true;
         } finally {
-            if (fis != null) {
+            if (is != null) {
                 try {
-                    fis.close();
+                    is.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
