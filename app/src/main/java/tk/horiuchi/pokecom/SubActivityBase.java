@@ -25,7 +25,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,6 +39,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.IllegalFormatCodePointException;
 import java.util.IllegalFormatException;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,8 +63,8 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
     //public static TextView dWin;
     public static String debugText;
     protected Vibrator vib;
-    public static int main_width;
-    public static int main_height;
+    //public static int main_width;
+    //public static int main_height;
 //    public static float dpdx, dpdx_org;
     public static boolean debug_info = true;
     public static boolean beep_enable;
@@ -72,10 +72,10 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
     public static int cpuClockWait;
     public static boolean vibrate_enable = true;
     public static boolean legacy_storage_io;
-    public static int machine;
-    public static final int PC1401=1;
-    public static final int PC1245=2;
-    public static final int PC1350=3;
+    //public static int machine;
+    //public static final int PC1401=1;
+    //public static final int PC1245=2;
+    //public static final int PC1350=3;
 
     public static String default_path, path;
     public static String filetype;
@@ -99,9 +99,9 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        supportRequestWindowFeature(Window.FEATURE_ACTION_BAR);
 
-        System.out.printf("SubActivityBase created!\n");
+        //System.out.printf("SubActivityBase created!\n");
 
         if (true || savedInstanceState == null) {
 
@@ -187,11 +187,11 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
     // 位置調整用のボタン枠表示の切り替え
     protected void changeButtonFrame(int[] ids, boolean flg) {
 
-        for (int i = 0; i < ids.length; i++) {
+        for (int id : ids) {
             if (flg) {
-                findViewById(ids[i]).setBackgroundResource(R.drawable.button_debug);
+                findViewById(id).setBackgroundResource(R.drawable.button_debug);
             } else {
-                findViewById(ids[i]).setBackgroundResource(R.drawable.button);
+                findViewById(id).setBackgroundResource(R.drawable.button);
             }
         }
     }
@@ -282,7 +282,7 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
             prefs.edit().putString("PREF_SC", jsonInstanceString).apply();
             //outState.putSerializable("sc61860", sc_params);
             Log.w("SubActivity", "------------- onPause()");
-            if (debug_info) Toast.makeText(this, String.format("Activity saved. id=%d", sc_params.id), Toast.LENGTH_SHORT).show();
+            if (debug_info) Toast.makeText(this, String.format(Locale.US,"Activity saved. id=%d", sc_params.id), Toast.LENGTH_SHORT).show();
         }
 
         // Game pad のマッピング情報を保存する
@@ -317,7 +317,7 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
                 ml.sc.restoreParam(sc_params);
                 ml.sc.restart();
                 Log.w("SubActivity", "------------ onResume()    parameter restored!!! ---------");
-                if (debug_info) Toast.makeText(this, String.format("Activity loaded. id=%d", sc_params.id), Toast.LENGTH_SHORT).show();
+                if (debug_info) Toast.makeText(this, String.format(Locale.US,"Activity loaded. id=%d", sc_params.id), Toast.LENGTH_SHORT).show();
             }
         }
         cacheClear = false;
@@ -555,7 +555,7 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
             //fis = new FileInputStream(filename);
             //in = new BufferedReader(new InputStreamReader(fis));
 
-            byte buf[] = new byte[0x8000];
+            byte[] buf = new byte[0x8000];
             int len, i = 0;
             while ((len = is.read(buf)) != -1) {
                 i += len;
@@ -569,12 +569,12 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
                 }
             } else {
                 // BASICコードの場合は中間コード片変換してからメモリに展開する
-                int buf2[] = new int[i];
+                int[] buf2 = new int[i];
                 for (j = 0; j < i; j++) {
                     buf2[j] = 0x00ff & buf[j];
                     //Log.w("LOG", String.format("%02x %c", buf[j], buf[j]));
                 }
-                int buf3[] = bas2code(buf2);
+                int[] buf3 = bas2code(buf2);
                 for (j = 0; j < buf3.length; j++) {
                     mainram[start + j] = buf3[j];
                     //Log.w("LOG", String.format("%02x %c", buf3[j], buf3[j]));
@@ -608,18 +608,18 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
         int start = hilo(mainram[basicStartAdrH], mainram[basicStartAdrL]);
         int end = hilo(mainram[basicEndAdrH], mainram[basicEndAdrL]);
 
-        int data[] = new int[end - start + 1];
+        int[] data = new int[end - start + 1];
         for (int i = 0; i <= end - start; i++) {
             data[i] = mainram[start + i];
         }
-        int data2[] = code2bas(data);
+        int[] data2 = code2bas(data);
 
         save(uri, data2);
     }
 
     // マシン語プログラムの保存
     protected void save(Uri uri, int start, int end) {
-        int data[] = new int[end - start + 1];
+        int[] data = new int[end - start + 1];
         for (int i = 0; i <= end - start; i++) {
             data[i] = mainram[start + i];
         }
@@ -628,7 +628,7 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
     }
 
     // ファイル保存の共通処理
-    protected void save(Uri uri, int data[]) {
+    protected void save(Uri uri, int[] data) {
         //FileOutputStream fos = null;
 
         try {
@@ -640,7 +640,7 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
             }
             OutputStream os = getContentResolver().openOutputStream(uri);
             //fos = new FileOutputStream(filename);
-            byte buf[] = new byte[0x8000];
+            byte[] buf = new byte[0x8000];
 
             int i;
             for (i = 0; i < data.length; i++) {
@@ -676,9 +676,9 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
                         //Log.w("actLoadResultLauncher", String.format("filename=%s", text));
                         if (isTextFile(uri)) {
                             // BASIC
-                            Log.w("isTextFile", String.format("text!"));
+                            Log.w("isTextFile", "text!");
                             int len = load(uri);
-                            Toast.makeText(this, String.format("loaded:%s len:%d", uri, len), Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, String.format(Locale.US,"loaded:%s len:%d", uri, len), Toast.LENGTH_LONG).show();
                         } else {
                             // binary
                             Log.w("isTextFile", String.format("binary!"));
@@ -872,12 +872,12 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
 
                     if (uri != null && filetype.equals("BASIC")) {
                         int len = load(uri);
-                        Toast.makeText(SubActivityBase.this, String.format("loaded:%s len:%d", uri, len), Toast.LENGTH_LONG).show();
+                        Toast.makeText(SubActivityBase.this, String.format(Locale.US,"loaded:%s len:%d", uri, len), Toast.LENGTH_LONG).show();
 
                         Toast.makeText(this, "loaded:"+path+"("+len+")", Toast.LENGTH_LONG).show();
                     } else if (uri != null && filetype.equals("BINARY")) {
                         int len = load(uri, startAddress);
-                        Toast.makeText(SubActivityBase.this, String.format("loaded:%s len:%d addr:%X", uri, len, startAddress), Toast.LENGTH_LONG).show();
+                        Toast.makeText(SubActivityBase.this, String.format(Locale.US,"loaded:%s len:%d addr:%X", uri, len, startAddress), Toast.LENGTH_LONG).show();
                     } else {
                         // エラー
                     }
@@ -1417,7 +1417,8 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
                 break;
             default:
                 setKeyMapStep = 0;
-                tv.setTextColor(Color.WHITE);
+                tv.setText("");
+                //tv.setTextColor(Color.WHITE);
                 break;
         }
     }
@@ -1459,9 +1460,9 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
 
                 default:
                     // 外付けキーボードのキーからボタンidを決める
-                    for (int i = 0; i < keyTbl.length; i++) {
-                        if (keyCode == keyTbl[i].keycode) {
-                            id = keyTbl[i].btnid;
+                    for (Keytbl keytbl : keyTbl) {
+                        if (keyCode == keytbl.keycode) {
+                            id = keytbl.btnid;
                             break;
                         }
                     }
@@ -1536,7 +1537,7 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
 
 
 
-    protected class Keytbl {
+    protected static class Keytbl {
         int keycode;
         int btnid;
 
@@ -1546,7 +1547,7 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
         }
     }
 
-    protected Keytbl keyTbl[] = {
+    protected Keytbl[] keyTbl = {
             new Keytbl(KeyEvent.KEYCODE_A, R.id.buttonA),
             new Keytbl(KeyEvent.KEYCODE_B, R.id.buttonB),
             new Keytbl(KeyEvent.KEYCODE_C, R.id.buttonC),
@@ -1608,10 +1609,16 @@ public class SubActivityBase extends AppCompatActivity implements View.OnTouchLi
             new Keytbl(KeyEvent.KEYCODE_DEL, R.id.buttonDEL),
             new Keytbl(KeyEvent.KEYCODE_ESCAPE, R.id.buttonBRK),
             new Keytbl(KeyEvent.KEYCODE_SLASH, R.id.buttonDIV),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_DIVIDE, R.id.buttonDIV),
             new Keytbl(KeyEvent.KEYCODE_NUMPAD_MULTIPLY, R.id.buttonMLT),
+            new Keytbl(KeyEvent.KEYCODE_APOSTROPHE, R.id.buttonMLT),
             new Keytbl(KeyEvent.KEYCODE_MINUS, R.id.buttonMINUS),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_SUBTRACT, R.id.buttonMINUS),
             new Keytbl(KeyEvent.KEYCODE_PLUS, R.id.buttonPLS),
+            new Keytbl(KeyEvent.KEYCODE_SEMICOLON, R.id.buttonPLS),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_ADD, R.id.buttonPLS),
             new Keytbl(KeyEvent.KEYCODE_PERIOD, R.id.buttonDOT),
+            new Keytbl(KeyEvent.KEYCODE_NUMPAD_DOT, R.id.buttonDOT),
     };
 
 }

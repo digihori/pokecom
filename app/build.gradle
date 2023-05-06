@@ -9,8 +9,8 @@ android {
         applicationId "tk.horiuchi.pokecom"
         minSdk 21
         targetSdk 33
-        versionCode 50
-        versionName "1.07.01"
+        versionCode 51
+        versionName "1.07.02"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         archivesBaseName = "${applicationName}-${versionName}"
     }
@@ -24,6 +24,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    lintOptions {
+        disable 'NonConstantResourceId'
+    }
+    namespace 'tk.horiuchi.pokecom'
 }
 
 dependencies {
@@ -34,4 +38,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.google.code.gson:gson:2.3.1'
+    implementation 'androidx.preference:preference:1.0.0'
 }
