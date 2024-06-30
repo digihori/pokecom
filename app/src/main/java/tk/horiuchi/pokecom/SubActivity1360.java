@@ -29,7 +29,7 @@ public class SubActivity1360 extends SubActivityBase {
 
         mBtnResIds = new int[] {
                 R.id.buttonMODE, R.id.buttonBRK, R.id.buttonDA, R.id.buttonUA, R.id.buttonLA, R.id.buttonRA,
-                R.id.buttonDEL, R.id.buttonINS, R.id.buttonSHIFT2, R.id.buttonCE,
+                R.id.buttonKANA, R.id.buttonDEL, R.id.buttonINS, R.id.buttonSHIFT2, R.id.buttonCE,
 
                 R.id.buttonSHIFT,
                 R.id.buttonQ, R.id.buttonW, R.id.buttonE, R.id.buttonR, R.id.buttonT,
@@ -37,14 +37,14 @@ public class SubActivity1360 extends SubActivityBase {
                 R.id.buttonDEF,
                 R.id.buttonA, R.id.buttonS, R.id.buttonD, R.id.buttonF, R.id.buttonG,
                 R.id.buttonH, R.id.buttonJ, R.id.buttonK, R.id.buttonL, R.id.buttonEQ,
-                R.id.buttonKANA,
+                R.id.buttonSML,
                 R.id.buttonZ, R.id.buttonX, R.id.buttonC, R.id.buttonV, R.id.buttonB,
                 R.id.buttonN, R.id.buttonM, R.id.buttonSPC, R.id.buttonENTER,
 
-                R.id.button7, R.id.button8, R.id.button9, R.id.buttonK1, R.id.buttonK2,
-                R.id.button4, R.id.button5, R.id.button6, R.id.buttonDIV, R.id.buttonCLN,
-                R.id.button1, R.id.button2, R.id.button3, R.id.buttonMLT, R.id.buttonSCLN,
-                R.id.button0, R.id.buttonDOT, R.id.buttonPLS, R.id.buttonMINUS, R.id.buttonCOMMA
+                R.id.button7, R.id.button8, R.id.button9, R.id.buttonCOMMA, R.id.buttonCLN,
+                R.id.button4, R.id.button5, R.id.button6, R.id.buttonDIV, R.id.buttonSCLN,
+                R.id.button1, R.id.button2, R.id.button3, R.id.buttonMLT, R.id.buttonRSV1,
+                R.id.button0, R.id.buttonDOT, R.id.buttonPLS, R.id.buttonMINUS, R.id.buttonRSV2
 
         };
 
@@ -56,7 +56,7 @@ public class SubActivity1360 extends SubActivityBase {
         ml = new MainLoop1360(this, sv);
 
         // キーボード作成
-        kb = new KeyBoard1350();
+        kb = new KeyBoard1360();
 
         // Buttonインスタンスの取得
         // ButtonインスタンスのリスナーをこのActivityクラスそのものにする
@@ -110,7 +110,7 @@ public class SubActivity1360 extends SubActivityBase {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-        stretchItemSize((GridLayout)findViewById(R.id.keyArea), (ImageView)findViewById(R.id.keyAreaImageView), 56);
+        stretchItemSize((GridLayout)findViewById(R.id.keyArea), (ImageView)findViewById(R.id.keyAreaImageView), 57);
         //stretchItemSize((GridLayout)findViewById(R.id.tenKeyArea), (ImageView)findViewById(R.id.tenkey));
 
     }

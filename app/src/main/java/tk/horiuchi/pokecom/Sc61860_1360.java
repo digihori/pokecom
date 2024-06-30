@@ -292,9 +292,11 @@ public class Sc61860_1360 extends  Sc61860Base {
         */
 
         if ((iaval == 0) && (memr(0x3e00) != 0)) {
-		    jj = bit(memr(0x3e00));
+		    //jj = bit(memr(0x3e00));
+            jj = memr(0x3e00) - 1;  // ビット表現になっていない！！！
 		    if (jj < 7 && mBtnStatus[jj] != 0) {
 			    iramw(AREG, mBtnStatus[jj]);
+                //Log.w("0 ina", "bit="+jj);
                 /*
 			    keyBufCnt = 3000;
                 iacnt = incr16(iacnt);
@@ -311,6 +313,7 @@ public class Sc61860_1360 extends  Sc61860Base {
             //Log.w("LOG", "jj="+jj);
             if (jj < 5 && mBtnStatus[jj + 7] != 0) {
                 iramw(AREG, mBtnStatus[jj + 7]);
+                //Log.w("1 ina", "bit="+jj);
                 /*
                 keyBufCnt = 3000;
                 //Log.w("LOG", "iaval="+iaval+" keym["+(jj+7)+"]="+keym[jj+7]);

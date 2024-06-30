@@ -19,12 +19,12 @@ public class MainLoop1360 extends MainLoopBase {
     public static byte digi[];
     public static byte state[]={0};
 
-    private static final int dispSHIFT =(1<<0);
-    private static final int dispDEF   =(1<<1);
-    private static final int dispRUN   =(1<<4);
-    private static final int dispPRO   =(1<<5);
+    private static final int dispSHIFT =(1<<1);
+    private static final int dispDEF   =(1<<2);
+    private static final int dispRUN   =(1<<3);
+    private static final int dispPRO   =(1<<4);
     private static final int dispKANA  =(1<<6);
-    private static final int dispSML   =(1<<7);
+    private static final int dispSML   =(1<<0);
 
 
     public MainLoop1360(Context context, SurfaceView sv) {
