@@ -168,7 +168,7 @@ public class SubActivity1470 extends SubActivityBase {
         int r = 0, w = 0, c = 0;
         String str = "";
         dest[w++] = 0xff; // プログラム開始
-        String[] talken;
+        String[] token;
 
         while (r < len) {
             //Log.w("LOG", String.format("--- 行区切り ---"));
@@ -184,10 +184,10 @@ public class SubActivity1470 extends SubActivityBase {
             // 先頭の空白を削除する
             str = trimLeft(str);
 
-            talken = split(str);
+            token = split(str);
 
             // 一つ目のトークンは必ず行番号
-            int line_num = Integer.parseInt(talken[0]);
+            int line_num = Integer.parseInt(token[0]);
             dest[w++] = hibyte(line_num);
             dest[w++] = lobyte(line_num);
             if (line_num == 0) break;   // パースに失敗したらこの行はスキップする
@@ -197,24 +197,24 @@ public class SubActivity1470 extends SubActivityBase {
 
             // 次のトークンからはコマンド
             boolean flg_goto = false;
-            loop: for (int i = 1; i < talken.length; i++) {
-                if (i == 1 && talken[i].equals(":")) continue;  // 行番号の次がコロンの場合は読み捨て
-                int temp = cmdname2code(talken[i]);
+            loop: for (int i = 1; i < token.length; i++) {
+                if (i == 1 && token[i].equals(":")) continue;  // 行番号の次がコロンの場合は読み捨て
+                int temp = cmdname2code(token[i]);
                 if (temp != 0) {
                     dest[w++] = 0xfe;   // 拡張コード
                     dest[w++] = temp;
                     //Log.w("LOG", String.format("%02x", temp));
                     ll += 2;
-                    if (talken[i].equals("GOTO") || talken[i].equals("GOSUB")) {
+                    if (token[i].equals("GOTO") || token[i].equals("GOSUB")) {
                         flg_goto = true;
                     }
 
                 } else {
-                    int n = talken[i].length();
+                    int n = token[i].length();
                     if (flg_goto) {
                         flg_goto = false;
                         try {
-                            line_num = Integer.parseInt(talken[i]);
+                            line_num = Integer.parseInt(token[i]);
                             dest[w++] = 0x1f;   // ラインナンバー識別コード
                             dest[w++] = hibyte(line_num);
                             dest[w++] = lobyte(line_num);
@@ -224,37 +224,37 @@ public class SubActivity1470 extends SubActivityBase {
                             continue;
                         }
                     } else {
-                        replaceSpecialChar(talken[i]);
+                        replaceSpecialChar(token[i]);
                         /*
                         for (int j = 0; j <= 11; j++) {
-                            if (talken[i].equals(ecode[j])) {
+                            if (token[i].equals(ecode[j])) {
                                 dest[w++] = 0xf1 + j;
                                 ll++;
                                 continue loop;
                             }
                         }
                          */
-                        if (talken[i].equals("\\EX")) {
+                        if (token[i].equals("\\EX")) {
                             dest[w++] = 'E';
                             ll++;
                         } else {
                             for (int j = 0; j < n; j++) {
-                                dest[w++] = (int) (talken[i].charAt(j));
-                                //Log.w("LOG", String.format("%s", talken[i].charAt(j)));
+                                dest[w++] = (int) (token[i].charAt(j));
+                                //Log.w("LOG", String.format("%s", token[i].charAt(j)));
                                 ll++;
                             }
                         }
 /*
-                        if (talken[i].equals("\\SQR")) {
+                        if (token[i].equals("\\SQR")) {
                             dest[w++] = 0xfc;
                             ll++;
-                        } else if (talken[i].equals("\\PI")) {
+                        } else if (token[i].equals("\\PI")) {
                             dest[w++] = 0xfb;
                             ll++;
                         } else {
                             for (int j = 0; j < n; j++) {
-                                dest[w++] = (int) (talken[i].charAt(j));
-                                //Log.w("LOG", String.format("%s", talken[i].charAt(j)));
+                                dest[w++] = (int) (token[i].charAt(j));
+                                //Log.w("LOG", String.format("%s", token[i].charAt(j)));
                                 ll++;
                             }
                         }

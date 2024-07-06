@@ -164,7 +164,7 @@ public class FileLoad extends AppCompatActivity implements FileSelectDialog.OnFi
             txt.setSelection(dir.length());
 
             String[] token = dir.split("/", 0);
-            //if (talken.length == 0) return;
+            //if (token.length == 0) return;
             fileName = token[token.length - 1];
             //String[] token2 = fileName.split("\\.", 0);
             //if (token2.length < 2) return;
