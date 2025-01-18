@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -40,6 +41,16 @@ public class MainLoop1360 extends MainLoopBase {
         sc.setListener(this);
         sc.CpuReset();
 
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int f, int w, int h) {
+        Log.w("!!!1360!!!", String.format("width = %d, height=%d\n", w, h));
+        float s1 = (float)h * 0.80f / 93f;
+        float s2 = (float)w * 0.86f / 453f;
+        dpdx = s1 < s2 ? s1 : s2;
+        Log.w("!!!1360!!!", String.format("dpdx = %f (%f, %f)\n", dpdx, s1, s2));
+        super.surfaceChanged(holder, f, w, h);
     }
 
     @Override

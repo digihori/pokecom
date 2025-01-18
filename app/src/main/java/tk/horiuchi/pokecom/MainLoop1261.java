@@ -50,6 +50,16 @@ public class MainLoop1261 extends MainLoopBase {
     }
 
     @Override
+    public void surfaceChanged(SurfaceHolder holder, int f, int w, int h) {
+        Log.w("!!!1261!!!", String.format("width = %d, height=%d\n", w, h));
+        float s1 = (float)h / 90f;
+        float s2 = (float)w * 0.92f / 526f;
+        dpdx = s1 < s2 ? s1 : s2;
+        Log.w("!!!1261!!!", String.format("dpdx = %f (%f, %f)\n", dpdx, s1, s2));
+        super.surfaceChanged(holder, f, w, h);
+    }
+
+    @Override
     protected void doDraw(SurfaceHolder holder) {
         //描画処理を開始
         Canvas c = holder.lockCanvas();

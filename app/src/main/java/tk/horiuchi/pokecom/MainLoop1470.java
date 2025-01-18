@@ -66,6 +66,16 @@ public class MainLoop1470 extends MainLoopBase {
     }
 
     @Override
+    public void surfaceChanged(SurfaceHolder holder, int f, int w, int h) {
+        Log.w("!!!1470U!!!", String.format("width = %d, height=%d\n", w, h));
+        float s1 = (float)h / 66f;
+        float s2 = (float)w * 0.94f / 429f;
+        dpdx = s1 < s2 ? s1 : s2;
+        Log.w("!!!1470U!!!", String.format("dpdx = %f (%f, %f)\n", dpdx, s1, s2));
+        super.surfaceChanged(holder, f, w, h);
+    }
+
+    @Override
     protected void doDraw(SurfaceHolder holder) {
         //描画処理を開始
         Canvas c = holder.lockCanvas();
@@ -78,7 +88,7 @@ public class MainLoop1470 extends MainLoopBase {
             int i, j, k, l;
             Paint p = new Paint();
 
-            x_org = 8;
+            x_org = 12;
             y_org = 22;
             stp = 3;
             d_row=7;

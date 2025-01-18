@@ -49,6 +49,16 @@ public class MainLoop1245 extends MainLoopBase {
     }
 
     @Override
+    public void surfaceChanged(SurfaceHolder holder, int f, int w, int h) {
+        Log.w("!!!1245!!!", String.format("width = %d, height=%d\n", w, h));
+        float s1 = (float)h / 66f;
+        float s2 = (float)w * 0.94f / 380f;
+        dpdx = s1 < s2 ? s1 : s2;
+        Log.w("!!!1245!!!", String.format("dpdx = %f (%f, %f)\n", dpdx, s1, s2));
+        super.surfaceChanged(holder, f, w, h);
+    }
+
+    @Override
     protected void doDraw(SurfaceHolder holder) {
         //描画処理を開始
         Canvas c = holder.lockCanvas();
@@ -143,13 +153,13 @@ public class MainLoop1245 extends MainLoopBase {
             } else {
                 p.setColor(Color.LTGRAY);
             }
-            c.drawText("RUN", 12, 62, p);
+            c.drawText("RUN", 12, 64, p);
             if (prog_mode) {
                 p.setColor(Color.DKGRAY);
             } else {
                 p.setColor(Color.LTGRAY);
             }
-            c.drawText("PRO", 44, 62, p);
+            c.drawText("PRO", 44, 64, p);
 
             //描画処理を終了
             holder.unlockCanvasAndPost(c);

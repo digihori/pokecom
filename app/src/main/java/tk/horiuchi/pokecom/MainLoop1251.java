@@ -49,6 +49,16 @@ public class MainLoop1251 extends MainLoopBase {
     }
 
     @Override
+    public void surfaceChanged(SurfaceHolder holder, int f, int w, int h) {
+        Log.w("!!!1251!!!", String.format("width = %d, height=%d\n", w, h));
+        float s1 = (float)h / 66f;
+        float s2 = (float)w * 0.94f / 526f;
+        dpdx = s1 < s2 ? s1 : s2;
+        Log.w("!!!1251!!!", String.format("dpdx = %f (%f, %f)\n", dpdx, s1, s2));
+        super.surfaceChanged(holder, f, w, h);
+    }
+
+    @Override
     protected void doDraw(SurfaceHolder holder) {
         //描画処理を開始
         Canvas c = holder.lockCanvas();
@@ -143,24 +153,24 @@ public class MainLoop1251 extends MainLoopBase {
                 default:
                 case 0:
                     p.setColor(Color.DKGRAY);
-                    c.drawText("RUN", 12, 62, p);
+                    c.drawText("RUN", 12, 64, p);
                     p.setColor(Color.LTGRAY);
-                    c.drawText("PRO", 44, 62, p);
-                    c.drawText("RSV", 76, 62, p);
+                    c.drawText("PRO", 44, 64, p);
+                    c.drawText("RSV", 76, 64, p);
                     break;
                 case 1:
                     p.setColor(Color.DKGRAY);
-                    c.drawText("PRO", 44, 62, p);
+                    c.drawText("PRO", 44, 64, p);
                     p.setColor(Color.LTGRAY);
-                    c.drawText("RUN", 12, 62, p);
-                    c.drawText("RSV", 76, 62, p);
+                    c.drawText("RUN", 12, 64, p);
+                    c.drawText("RSV", 76, 64, p);
                     break;
                 case 2:
                     p.setColor(Color.DKGRAY);
-                    c.drawText("RSV", 76, 62, p);
+                    c.drawText("RSV", 76, 64, p);
                     p.setColor(Color.LTGRAY);
-                    c.drawText("RUN", 12, 62, p);
-                    c.drawText("PRO", 44, 62, p);
+                    c.drawText("RUN", 12, 64, p);
+                    c.drawText("PRO", 44, 64, p);
                     break;
             }
 

@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setTitle(title);
 
         // デバイスタイプとスケールの設定
+        // スケールはそれぞれのエミュを立ち上げた時に動的に決定するので、ここでは仮の値
         if (getResources().getBoolean(R.bool.is_7inch)) {
             deviceType = type7inch;
             if (1.3f < dpdx_org && dpdx_org< 1.4f) {
