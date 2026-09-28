@@ -54,6 +54,9 @@
             android:name=".SubActivity1360"
             android:screenOrientation="landscape"></activity>
         <activity
+            android:name=".SubActivity1360k"
+            android:screenOrientation="landscape"></activity>
+        <activity
             android:name=".MyPreferenceActivity"
             android:screenOrientation="landscape"></activity>
         <activity

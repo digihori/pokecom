@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private File pc1261 = null;
     private File pc1350 = null;
     private File pc1360 = null;
+    private File pc1360k = null;
     private File pc1401 = null;
     private File pc1402 = null;
     private File pc1450 = null;
@@ -254,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 前回のチェックボックス状態を復元
         int id = prefs.getInt("SelectStatus", 0);
         if (id == R.id.RadioButton1245 || id == R.id.RadioButton1251 || id == R.id.RadioButton1261 ||
-                id == R.id.RadioButton1350 || id == R.id.RadioButton1360 ||
+                id == R.id.RadioButton1350 || id == R.id.RadioButton1360 || id == R.id.RadioButton1360k ||
                 id == R.id.RadioButton1401 || id == R.id.RadioButton1402  ||
                 id == R.id.RadioButton1450 || id == R.id.RadioButton1460 || id == R.id.RadioButton1470) {
             ((RadioButton) findViewById(id)).setChecked(true);
@@ -297,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         int id = sp.getInt("SelectedRom", 0);
-        //id = 0;
+        id = 0;
         if (id != 0) {
             Intent intent;
             switch (id) {
@@ -316,6 +317,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case R.id.RadioButton1360:
                     intent = new Intent(getApplication(), SubActivity1360.class);
+                    break;
+                case R.id.RadioButton1360k:
+                    intent = new Intent(getApplication(), SubActivity1360k.class);
                     break;
                 case R.id.RadioButton1401:
                     intent = new Intent(getApplication(), SubActivity1401.class);
@@ -476,6 +480,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     rb1360.setTextColor(Color.LTGRAY);
                 }
+                pc1360k = new File(rom_path + "/pc1360kmem.bin");
+                File pc1360kbank = new File(rom_path + "/pc1360kbank.bin");
+                RadioButton rb1360k = findViewById(R.id.RadioButton1360k);
+                if (pc1360k.exists() && pc1360kbank.exists()) {
+                    rb1360k.setTextColor(Color.BLACK);
+                } else {
+                    rb1360k.setTextColor(Color.LTGRAY);
+                }
                 pc1401 = new File(rom_path + "/pc1401mem.bin");
                 RadioButton rb1401 = findViewById(R.id.RadioButton1401);
                 if (pc1401.exists()) {
@@ -551,6 +563,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             new ChkTbl(R.id.RadioButton1261, "pc1261mem.bin", ""),
             new ChkTbl(R.id.RadioButton1350, "pc1350mem.bin", ""),
             new ChkTbl(R.id.RadioButton1360, "pc1360mem.bin", "pc1360bank.bin"),
+            new ChkTbl(R.id.RadioButton1360k, "pc1360kmem.bin", "pc1360kbank.bin"),
             new ChkTbl(R.id.RadioButton1401, "pc1401mem.bin", ""),
             new ChkTbl(R.id.RadioButton1402, "pc1402mem.bin", ""),
             new ChkTbl(R.id.RadioButton1450, "pc1450mem.bin", ""),
@@ -620,6 +633,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case R.id.RadioButton1360:
                     if (isRadioButtonEnable(rb_id) || pc1360 != null && pc1360.exists()) {
                         intent = new Intent(getApplication(), SubActivity1360.class);
+                    } else {
+                        return;
+                    }
+                    break;
+                case R.id.RadioButton1360k:
+                    if (isRadioButtonEnable(rb_id) || pc1360k != null && pc1360k.exists()) {
+                        intent = new Intent(getApplication(), SubActivity1360k.class);
                     } else {
                         return;
                     }

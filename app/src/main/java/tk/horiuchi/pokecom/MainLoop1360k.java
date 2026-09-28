@@ -1,0 +1,159 @@
+package tk.horiuchi.pokecom;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+
+import static tk.horiuchi.pokecom.MainActivity.dpdx;
+
+/**
+ * Created by yoshimine on 2017/07/30.
+ */
+
+public class MainLoop1360k extends MainLoopBase {
+
+    private final int digit=6*5*5*4;
+    public static byte digi[];
+    public static byte state[]={0};
+
+    private static final int dispSHIFT =(1<<1);
+    private static final int dispDEF   =(1<<2);
+    private static final int dispRUN   =(1<<3);
+    private static final int dispPRO   =(1<<4);
+    private static final int dispHIRA  =(1<<5);
+    private static final int dispKANA  =(1<<6);
+    private static final int dispKAN  =(1<<7);
+    private static final int dispSML   =(1<<0);
+
+
+    public MainLoop1360k(Context context, SurfaceView sv) {
+        super(context, sv);
+
+        digi = new byte[digit];
+        for (int i=0; i<digit; i++) {
+            digi[i] = 0;
+        }
+
+        // cpuオブジェクトの生成
+        sc = new Sc61860_1360k(context);
+        sc.setListener(this);
+        sc.CpuReset();
+
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int f, int w, int h) {
+        Log.w("!!!1360!!!", String.format("width = %d, height=%d\n", w, h));
+        float s1 = (float)h * 0.80f / 93f;
+        float s2 = (float)w * 0.86f / 453f;
+        dpdx = s1 < s2 ? s1 : s2;
+        Log.w("!!!1360!!!", String.format("dpdx = %f (%f, %f)\n", dpdx, s1, s2));
+        super.surfaceChanged(holder, f, w, h);
+    }
+
+    @Override
+    protected void doDraw(SurfaceHolder holder) {
+        //描画処理を開始
+        Canvas c = holder.lockCanvas();
+
+        if (c != null) {
+
+            c.scale(dpdx, dpdx);
+
+            int x_org, y_org, stp, d_row, d_col;
+            int x, y;
+            int i, j, k, l;
+            Paint p = new Paint();
+
+            x_org = 52;
+            y_org = 8;
+            stp = 3;
+            d_row=8;
+            d_col=6;
+            c.drawColor(0xFFEEFFFF);
+
+            p.setStyle(Paint.Style.FILL);
+
+            for (l =0; l < 4; l++) {
+                for (k = 0, x = x_org; k < 25; k++) {
+                    for (j = 0; j < d_col; j++, x += stp) {
+                        for (i = 0, y = y_org + (d_row * stp)*l; i < d_row; i++, y += stp) {
+                            if ((digi[150*l + k * d_col + j] & 0x01 << i) != 0) {
+                                p.setColor(Color.DKGRAY);
+                            } else {
+                                p.setColor(Color.LTGRAY);
+                            }
+                            c.drawRect(x, y, x + stp, y + stp, p);
+                        }
+                    }
+                    //x += stp;
+                }
+            }
+
+            // シンボル表示
+            //Log.w("1360K-LOG", String.format("state=%02x", state[0]));
+            p.setTextSize(10);
+            if ((state[0] & dispRUN) != 0) {
+                p.setColor(Color.DKGRAY);
+            } else {
+                p.setColor(Color.LTGRAY);
+            }
+            c.drawText("RUN", 8, 16, p);
+            if ((state[0] & dispPRO) != 0) {
+                p.setColor(Color.DKGRAY);
+            } else {
+                p.setColor(Color.LTGRAY);
+            }
+            c.drawText("PRO", 8, 28, p);
+            if ((state[0] & dispHIRA) != 0) {
+                p.setColor(Color.DKGRAY);
+            } else {
+                p.setColor(Color.LTGRAY);
+            }
+            c.drawText("平", 8, 40, p);
+            if ((state[0] & dispKANA) != 0) {
+                p.setColor(Color.DKGRAY);
+            } else {
+                p.setColor(Color.LTGRAY);
+            }
+            c.drawText("片", 8, 52, p);
+            if ((state[0] & dispKAN) != 0) {
+                p.setColor(Color.DKGRAY);
+            } else {
+                p.setColor(Color.LTGRAY);
+            }
+            c.drawText("[S]", 8, 64, p);
+            if ((state[0] & dispSML) != 0) {
+                p.setColor(Color.DKGRAY);
+            } else {
+                p.setColor(Color.LTGRAY);
+            }
+            c.drawText("SML", 8, 76, p);
+
+            if ((state[0] & dispSHIFT) != 0) {
+                p.setColor(Color.DKGRAY);
+            } else {
+                p.setColor(Color.LTGRAY);
+            }
+            c.drawText("SHIFT", 8, 88, p);
+            if ((state[0] & dispDEF) != 0) {
+                p.setColor(Color.DKGRAY);
+            } else {
+                p.setColor(Color.LTGRAY);
+            }
+            c.drawText("DEF", 8, 100, p);
+
+
+            //描画処理を終了
+            holder.unlockCanvasAndPost(c);
+
+        }
+
+
+    }
+
+}

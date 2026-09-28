@@ -189,6 +189,7 @@ public class Sc61860_1245 extends Sc61860Base {
         if (0xb000 <= adr && adr < 0xb800 ) adr += 0x800;
         if (0x8000 <= adr && adr < 0xa000 ) adr += 0x2000;
         if (0xd000 <= adr && adr < 0xd800 ) adr -= 0x1000;
+        if (0xe800 <= adr && adr < 0xf000 ) adr += 0x1000;
         if (0xf900 <= adr) adr &= 0xf8ff;
         if (0xb800 <= adr && adr < 0xc000 ) adr += 0x800;
 
@@ -209,6 +210,14 @@ public class Sc61860_1245 extends Sc61860Base {
                 mainram[adr + 0x500] = lobyte(dat);
                 mainram[adr + 0x600] = lobyte(dat);
                 mainram[adr + 0x700] = lobyte(dat);
+                mainram[adr - 0x1000] = lobyte(dat);
+                mainram[adr - 0x1000 + 0x100] = lobyte(dat);
+                mainram[adr - 0x1000 + 0x200] = lobyte(dat);
+                mainram[adr - 0x1000 + 0x300] = lobyte(dat);
+                mainram[adr - 0x1000 + 0x400] = lobyte(dat);
+                mainram[adr - 0x1000 + 0x500] = lobyte(dat);
+                mainram[adr - 0x1000 + 0x600] = lobyte(dat);
+                mainram[adr - 0x1000 + 0x700] = lobyte(dat);
 
                 if (0xf800 <= adr && adr <= 0xf83b) {
                     //Log.w("LOG", ""+(adr-0xf800));

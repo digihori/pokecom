@@ -274,6 +274,62 @@ public class Sc61860Base implements Serializable {
         ;
     }
 
+    public class LogBuffer {
+        private static final int SIZE = 512;
+
+        private final int[] pc = new int[SIZE];
+        private final int[] opcodes = new int[SIZE];
+        private final String[] ins = new String[SIZE];
+        private final int[] dp = new int[SIZE];
+        private final int[] A = new int[SIZE];
+        private final int[] B = new int[SIZE];
+
+
+        private int pos = 0;      // 次に書く位置
+        private int count = 0;    // 有効件数
+
+        private int afterTrace = 0;
+        public void setAfterTrace() {
+            afterTrace = 512;
+        }
+
+        public void add(int p, int op, int a, int b, int d) {
+            pc[pos] = p;
+            opcodes[pos] = op;
+            ins[pos] = instractionCode[op];
+            A[pos] = a;
+            B[pos] = b;
+            dp[pos] = d;
+
+            pos = (pos + 1) % SIZE;
+
+            if (count < SIZE) count++;
+
+            if (afterTrace != 0) {
+                afterTrace--;
+//                debugText = String.format("PC=%04x(%02x %s) P=%02x Q=%02x R=%02x DP=%04x I=%02x J=%02x A=%02x B=%02x\n" +
+//                                "XhXl=%02x%02x YhYl=%02x%02x PA=%02x PB=%02x PC=%02x PT=%02x pow=%02x lcd=%02x kon=%02x d=%f",
+//                        current_pc, opcode, instractionCode[opcode], preg, qreg, rreg, dp, iram[IREG], iram[JREG], iram[AREG], iram[BREG],
+//                        iram[XHREG], iram[XLREG], iram[YHREG], iram[YLREG], iaval, ibval, ctrlval, testport, power_on, disp_on, kon_cnt, dpdx_org);
+                debugText = String.format("PC=%04x(%02x %s) P=%02x Q=%02x R=%02x DP=%04x I=%02x J=%02x A=%02x B=%02x XhXl=%02x%02x YhYl=%02x%02x",
+                        p, opcode, instractionCode[opcode], preg, qreg, rreg, d, iram[IREG], iram[JREG], iram[AREG], iram[BREG], iram[XHREG], iram[XLREG], iram[YHREG], iram[YLREG]);
+                //Log.w("1360K-LOG",
+                //        String.format("pc=%04x op=%02x(%s) A=%02x B=%02x DP=%04x\n", p, op, instractionCode[op], a, b, d));
+                Log.w("1360K-LOG", debugText);
+            }
+        }
+
+        public void dump() {
+            for (int i = 0; i < count; i++) {
+                int idx = (pos - count + i + SIZE) % SIZE;
+                Log.w("1360K-LOG",
+                String.format("pc=%04x op=%02x(%s) A=%02x B=%02x DP=%04x\n", pc[idx], opcodes[idx], ins[idx], A[idx], B[idx], dp[idx]));
+            }
+        }
+    }
+
+    LogBuffer logX = new LogBuffer();
+
     public void CpuRun() {
         //Log.w("LOG", "--- run ---");
 
@@ -332,11 +388,13 @@ public class Sc61860Base implements Serializable {
 
         if (debug_info && ++debug_cnt > 50) {
             debug_cnt = 0;
-            debugText = String.format("PC=%04x(%02x %s) P=%02x Q=%02x R=%02x DP=%04x I=%02x J=%02x A=%02x B=%02x\n" +
-                            "XhXl=%02x%02x YhYl=%02x%02x PA=%02x PB=%02x PC=%02x PT=%02x pow=%02x lcd=%02x kon=%02x d=%f",
-                    current_pc, opcode, instractionCode[opcode], preg, qreg, rreg, dp, iram[IREG], iram[JREG], iram[AREG], iram[BREG],
-                    iram[XHREG], iram[XLREG], iram[YHREG], iram[YLREG], iaval, ibval, ctrlval, testport, power_on, disp_on, kon_cnt, dpdx_org);
+            //debugText = String.format("PC=%04x(%02x %s) P=%02x Q=%02x R=%02x DP=%04x I=%02x J=%02x A=%02x B=%02x\n" +
+            //                "XhXl=%02x%02x YhYl=%02x%02x PA=%02x PB=%02x PC=%02x PT=%02x pow=%02x lcd=%02x kon=%02x d=%f",
+            //        current_pc, opcode, instractionCode[opcode], preg, qreg, rreg, dp, iram[IREG], iram[JREG], iram[AREG], iram[BREG],
+            //        iram[XHREG], iram[XLREG], iram[YHREG], iram[YLREG], iaval, ibval, ctrlval, testport, power_on, disp_on, kon_cnt, dpdx_org);
         }
+
+        logX.add(current_pc, opcode, iram[AREG], iram[BREG], dp);
 
 
     }
@@ -2288,9 +2346,9 @@ public class Sc61860Base implements Serializable {
         public void intFunc() {
             qreg= IBPORT;
             ibval = iramr(IBPORT);
-            if (ibval != 0) {
-                //Log.w("LOG", "outb!!! ibval="+ibval);
-            }
+            //if (ibval != 0) {
+                Log.w("1360K-LOG", "outb!!! ibval="+ibval);
+            //}
             iTick += 2;
         }
     }
@@ -2304,6 +2362,7 @@ public class Sc61860Base implements Serializable {
             qreg= FOPORT;
             foval = iramr(FOPORT);
             outf();
+            Log.w("1360-OUTF", String.format("OUTF!!! -> %02x", foval));
             iTick += 3;
         }
 
@@ -2314,7 +2373,7 @@ public class Sc61860Base implements Serializable {
         public void intFunc() {
             qreg = CTRLPORT&0x7f;
             ctrlval = iramr(CTRLPORT);
-
+            //Log.w("1360K-LOG", String.format("---OUTC %02x", ctrlval));
             if (disp_on != (ctrlval & 1)) {
                 disp_on = ctrlval & 1;
                 listener.refreshScreen();
